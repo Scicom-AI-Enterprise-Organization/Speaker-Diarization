@@ -43,7 +43,7 @@ Serialized Output Training (SOT). They represent a multi-speaker conversation as
 Loss function: most likely standard next-token cross-entropy over the serialized target sequence.
 Speaker labels are relative, not global.
 
-Main limitation is a **sim-to-real gap** and **limited real eval coverage** (Section 9), which we quantify rather than hide.
+Main limitation is a **sim-to-real gap** and **limited real eval coverage** (Section 9).
 
 ## Data
 - Real Data
