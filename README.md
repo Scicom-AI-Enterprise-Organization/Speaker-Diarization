@@ -12,6 +12,8 @@ SATS aims to transcribe what is said and to precisely determine the timing of ea
 | **SpeakerLM** [21]     | Single MLLM with speaker-aware modeling                            | Limited to short audio (~50–90s) and ≤4 speakers; no explicit timestamps                      |
 | **JEDIS-LLM** [17]     | Trains on ≤20s clips but streams over long audio via a **Speaker Prompt Cache** | Still chunk-wise; needs extra cache/alignment machinery for global consistency |
 
+---
+
 ## 2. Architecture
 MOSS Transcribe Diarize couples an audio encoder with a projection module that maps multi-speaker acoustic embeddings into the feature space of a pretrained text LLM.
 
@@ -37,11 +39,15 @@ log-mel input_features → WhisperEncoder
 
 Main limitation is a **sim-to-real gap** and **limited real eval coverage**.
 
+---
+
 ## 3. Data
 - Real Data
   - AISHELL-4 [7] — Mandarin meeting-room recordings, with both far-field (overlapping) and near-field mics. They "use the averaged channel of the far-field signals." (Far-field = room mic, hard; near-field = close mic, clean.)
   - They curated Podcast and Movies sets (used as test sets here).
 - Simulated Data
+
+---
 
 ## 4. Evaluation
 Table 1. Test sets
@@ -52,6 +58,8 @@ Table 1. Test sets
 | Movies | ~11.5s | 1–6 | Short, overlap-rich film/TV clips; Chinese+English, also Korean/Japanese/Cantonese; professionally annotated |
 
 Podcast and Movies will be open-sourced on HuggingFace.
+
+---
 
 ## 5. Results
 
