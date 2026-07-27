@@ -146,7 +146,7 @@ We evaluate across **four regimes** so results generalize beyond any single spea
 | **Movies-style** | **Short, dense-overlap** | **Simulated** from our pool (§4.2) | Auto gold (free) | Clean — our own audio |
 | **Podcast-style** | Long, **conversational**, Manglish | Small **CC-licensed / owned** MY podcast slice | Small professional pass | No YouTube scraping; licensed or owned only |
 
-Rationale: Parliament + IMDA alone miss dense overlap and conversational Manglish — the two regimes closest to real SciCom deployment. **Movies-style is free** (the simulator already emits short overlap-rich clips with gold labels); only **Podcast-style** needs a small, targeted, legally-sourced + lightly-annotated slice. This closes the coverage gap without a collection program.
+Rationale: Parliament + IMDA alone miss dense overlap and conversational Manglish. **Movies-style is free** (the simulator already emits short overlap-rich clips with gold labels); only **Podcast-style** needs a small, targeted, legally-sourced + lightly-annotated slice. This closes the coverage gap without a collection program.
 
 ### Results scaffold (fill as we run)
 
@@ -159,6 +159,9 @@ Compact view (headline joint metrics; full CER/WER/cpCER/Δcp/DER reported per s
 | **MOSS 0.9B (LoRA on Sim + anchor)** | — | — | — | — |
 
 > Read **per column** (per regime) — cpWER/DER are not comparable across regimes (overlap density and register differ). Small dialect/Podcast slices → report variance / CIs.
+
+*Test sets: IMDA-conv = IMDA NSC conversational subset; Parliament = Malaysian Hansard debates; Manglish = code-switched set. Reference numbers from the MOSS
+paper (Chinese/English benchmarks) are in the section below and are NOT directly comparable to these Malaysian sets.*
 
 ### Reference — MOSS 0.9B reported `[Paper]` (Mandarin/English; not directly comparable)
 
@@ -201,26 +204,3 @@ Evaluation normalization (Appendix A.2) — before scoring they strip parentheti
 5. Tokenizer check: confirm the backbone LLM's tokenizer covers Malay diacritics and Tamil/Chinese scripts well; a poor tokenizer inflates CER on non-Latin segments.
 6. Cheapest first experiment: before any training, run the released 0.9B checkpoint on Malaysian meeting audio and measure cpCER/Δcp. That baseline tells you how much its "50+ languages" already transfers, and where fine-tuning is actually needed.
 7. Hotwords for free gains: Malaysian names, place names (e.g., Putrajaya, Kementerian), and org acronyms via the 热词提示 mechanism — no training required.
-
-## Evaluation — Malaysian multi-speaker SATS
-
-Metrics: WER (word error rate, primary for Malay/English), cpWER (concatenated min-permutation WER — joint transcription + speaker attribution), and Δcp = cpWER − WER (isolates diarization error). Lower is better for all.
-
-| System | IMDA-conv WER↓ / cpWER↓ / Δcp↓ | Parliament WER↓ / cpWER↓ / Δcp↓ | Manglish WER↓ / cpWER↓ / Δcp↓ |
-|---|---|---|---|
-| Cascaded: Whisper-large-v3 + Pyannote | — / — / — | — / — / — | — / — / — |
-| MOSS-Transcribe-Diarize 0.9B (zero-shot) | — / — / — | — / — / — | — / — / — |
-| **MOSS-Transcribe-Diarize 0.9B (fine-tuned)** | — / — / — | — / — / — | — / — / — |
-
-*Test sets: IMDA-conv = IMDA NSC conversational subset; Parliament = Malaysian Hansard debates; Manglish = code-switched set. Reference numbers from the MOSS
-paper (Chinese/English benchmarks) are in the section below and are NOT directly comparable to these Malaysian sets.*
-
-## Reference: MOSS-Transcribe-Diarize 0.9B
-Metrics: CER / cpCER / Δcp (%), lower is better. Benchmarks are Mandarin/English — shown here as a capability reference.
-
-| Dataset | CER↓ | cpCER↓ | Δcp↓ |
-|---|---|---|---|
-| AISHELL-4 | 14.84 | 15.83 | 0.99 |
-| Alimeeting | 24.86 | 22.17 | -2.69 |
-| Podcast | 5.97 | 7.37 | 1.40 |
-| Movies | 6.36 | 12.76 | 6.40 |
