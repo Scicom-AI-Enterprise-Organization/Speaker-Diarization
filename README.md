@@ -189,7 +189,7 @@ Evaluation normalization (Appendix A.2) — before scoring they strip parentheti
 | **Eval coverage** | Four regimes help, but the **Podcast-style** Manglish slice is small and **Movies-style is synthetic** (not real overlap) | Report per-regime variance/CIs; treat Podcast-style as indicative until enlarged; keep the full-collection track as fallback |
 | **Existing-corpus licensing** | Reuse/redistribution limits | Verify each license; keep training vs release separate |
 | **Whisper-medium encoder ceiling** | Weaker on Tamil/Hokkien | Ablate large-v3 encoder swap |
-| **Unreported training recipe `[Paper]`** | Reproduction uncertainty | Reverse-engineer curriculum; log everything |
+| **Unreported training recipe** | Reproduction uncertainty | Reverse-engineer curriculum; log everything |
 | **No timestamp metric in paper** | No baseline to compare against | We define DER + boundary-F1 + onset error |
 
 **What this approach does *not* give us:** a professionally-annotated, demographically-controlled Malaysian benchmark covering all dialects and Manglish conversational speech. If evaluation coverage proves insufficient, the full data-collection track is the fallback.
