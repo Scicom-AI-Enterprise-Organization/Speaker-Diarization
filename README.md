@@ -13,7 +13,9 @@ SATS aims to transcribe what is said and to precisely determine the timing of ea
 
 ## Architecture
 MOSS Transcribe Diarize couples an audio encoder with a projection module that maps multi-speaker acoustic embeddings into the feature space of a pretrained text LLM.
-Audio-encoder (log-Mel spectrogram front-end) → projection → Autoregressive SpeechLLM (0.9B parameters)
+
+> Audio-encoder (log-Mel spectrogram front-end) → projection → Autoregressive SpeechLLM (0.9B parameters)
+
 They write the timestamp as literal text tokens. This avoids binding temporal encoding to absolute positional indices, which become sparse and ineffective over long durations, and enables accurate timestamp generation over hour-scale audio.
 Serialized Output Training (SOT). They represent a multi-speaker conversation as a single flat token stream with speaker-change tokens ([S01], [S02]) inline: [start][speaker] words [end] [start][speaker] words [end] ...
 Loss function: most likely standard next-token cross-entropy over the serialized target sequence.
