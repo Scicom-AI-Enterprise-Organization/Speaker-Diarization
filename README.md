@@ -93,15 +93,17 @@ Output:
 
 Evaluation normalization (Appendix A.2) — before scoring they strip parentheticals \s*\(.*?\), angle-tags <.*?>, and non-speaker brackets \[(?!S\d+\]).*?\], keeping only [Sxx] tags and text. This normalizer must be replicated or CER numbers won't be comparable.
 
+---
+
 ## 7. Adapting to Malaysian speech
 
 ### 7.1 Single-speaker pool from existing corpora [Proposed]
 Assemble a Malaysian single-speaker pool from data we already have/can access — **no new recording**:
-- **Mesolitica / Malaya-Speech** `[Internal]` — large Malaysian ASR incl. code-switch (mostly single-speaker → ideal pool).
+- **Mesolitica / Malaya-Speech** — large Malaysian ASR incl. code-switch (mostly single-speaker → ideal pool).
 - **Common Voice** (`ms`, `ta`, `yue`, `zh`), **FLEURS** (`ms`) — read speech.
 Keep Malay, Manglish, Mandarin, Cantonese, Hokkien, Tamil, and regional accents in the pool so mixtures match the real distribution. **Do not language-filter** — Manglish switches language mid-sentence and the model must learn that.
 
-### 7.2 Synthetic multi-speaker via the §3.2 simulator (the key move) [Paper] recipe
+### 7.2 Synthetic multi-speaker via the §3.2 simulator `[Paper]` recipe
 Run the paper's mixer **unchanged** on our pool to produce labeled multi-speaker conversations:
 - Draw **2–12 speakers**, one utterance each; cut into word-runs (log-normal weights).
 - One timeline, Gaussian gaps, speaker alternation, **overlap ≤80%** of shorter segment.
@@ -110,7 +112,7 @@ Run the paper's mixer **unchanged** on our pool to produce labeled multi-speaker
 Every mixture ships with ground-truth `[start][Sxx] text [end]` **for free** — this is what removes the annotation cost.
 
 ### 7.3 Existing *labeled* multi-speaker for real anchor + eval `[Proposed]`
-- **Malaysian Parliament / Hansard** `[Internal]` — multi-speaker, named turns, timing → real diarization anchor + a natural eval slice (formal register).
+- **Malaysian Parliament / Hansard** — multi-speaker, named turns, timing → real diarization anchor + a natural eval slice (formal register).
 - **IMDA NSC Parts 3–6** — conversational, multi-speaker, code-switch (Singaporean ≈ but ≠ Malaysian).
 Use these as (a) a small real fine-tuning anchor to reduce sim-to-real gap, and (b) the evaluation set. A **modest professional re-check** of a few hours for the gold eval is the only manual labeling — far cheaper than annotating a full corpus.
 
@@ -120,13 +122,11 @@ Use these as (a) a small real fine-tuning anchor to reduce sim-to-real gap, and 
 
 | Resource | Role here | Note |
 | --- | --- | --- |
-| **Mesolitica / Malaya-Speech** `[Internal]` | Simulation pool (primary) | Large MY ASR + code-switch; mostly single-speaker |
-| **Malaysian Parliament / Hansard** `[Internal]` | Real anchor + eval | Multi-speaker, named turns, timed; formal register |
+| **Mesolitica / Malaya-Speech** | Simulation pool (primary) | Large MY ASR + code-switch; mostly single-speaker |
+| **Malaysian Parliament / Hansard** | Real anchor + eval | Multi-speaker, named turns, timed; formal register |
 | **IMDA NSC Parts 3–6** | Real anchor + eval | Conversational, code-switch; Singaporean |
 | **Common Voice** (`ms`,`ta`,`yue`,`zh`) | Simulation pool | Read speech |
 | **FLEURS** (`ms`) | Simulation pool | Read speech, small |
-
-> Replace `[Internal]` rows with SciCom's actual inventory — the plan is agnostic to which single-speaker corpus feeds the mixer.
 
 ---
 
@@ -157,7 +157,7 @@ We evaluate across **four regimes** so results generalize beyond any single spea
 
 | Eval set | Regime it covers | Source | Annotation | Legal note |
 | --- | --- | --- | --- | --- |
-| **Parliament** | Long, **formal**, turn-clean | Malaysian Hansard `[Internal]` | Existing named turns + light gold re-check | Public record — verify reuse terms |
+| **Parliament** | Long, **formal**, turn-clean | Malaysian Hansard | Existing named turns + light gold re-check | Public record — verify reuse terms |
 | **IMDA-conv** | **Conversational**, code-switch | IMDA NSC Parts 3–4 | Existing labels | IMDA agreement; Singaporean ≠ MY |
 | **Movies-style** | **Short, dense-overlap** | **Simulated** from our pool (§4.2) | Auto gold (free) | Clean — our own audio |
 | **Podcast-style** | Long, **conversational**, Manglish | Small **CC-licensed / owned** MY podcast slice | Small professional pass | No YouTube scraping; licensed or owned only |
@@ -195,7 +195,7 @@ Compact view (headline joint metrics; full CER/WER/cpCER/Δcp/DER reported per s
 
 ---
 
-## 11. Risks & limitations (stated, not hidden)
+## 11. Risks & limitations
 
 | Risk | Impact | Mitigation |
 | --- | --- | --- |
