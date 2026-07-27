@@ -21,10 +21,18 @@ MOSS Transcribe Diarize couples an audio encoder with a projection module that m
 | **Text backbone** | **Qwen3-0.6B** — hidden size = 1024, 28 transformer layers, 16 attention heads, 8 KV heads (GQA), vocabulary size = 151,936, max position embeddings = 131,072 (128K context) (~596 M) |
 
 _Note:_ "0.9B" ≈ Whisper-Medium encoder (~0.3B) + VQAdaptor + Qwen3-0.6B.
-> Audio-encoder (log-Mel spectrogram front-end) → projection (VQAdaptor) → Autoregressive SpeechLLM (0.9B parameters)
-> log-mel input_features -> HF WhisperEncoder
-         -> 4x time merge  (B, T, 1024) -> (B, T/4, 4096)
-         -> VQAdaptor       (4096 -> 1024)
+
+```
+log-mel input_features → WhisperEncoder
+    → 4× time merge  (B, T, 1024) → (B, T/4, 4096)   # audio_merge_size = 4
+    → VQAdaptor      (4096 → 1024)                    # Linear→SiLU→Linear→LayerNorm
+    → Qwen3-0.6B     → [start][Sxx] text [end] ...
+```
+
+- **Timestamps as text `[Paper]`** — emitted as literal tokens (plain BPE digits `[Code]`), so timestamping is ordinary next-token prediction; generalizes to hour-scale audio.
+- **Serialized Output Training (SOT)** [10] — a conversation is one flat stream: `[start][Sxx] words [end] …`.
+- **Speaker labels are relative `[Paper]`** — `[S01]` = "voice #1 in this file," not a named identity.
+- **Loss** — inferred next-token cross-entropy over the serialized target; **not stated `[Paper]`**.
 
 Two parts:
 
