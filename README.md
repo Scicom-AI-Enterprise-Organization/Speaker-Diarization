@@ -78,8 +78,8 @@ Long-context end-to-end modeling keeps speakers consistent where cascaded/short-
 
 ---
 
-## 6. Adapting to Malaysian speech
 ## Part 2. Malaysian adaptation
+## 6. Adapting to Malaysian speech
 
 ### 6.1 Single-speaker pool from existing corpora `[Proposed]`
 Assemble a Malaysian single-speaker pool from data we already have/can access:
