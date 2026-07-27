@@ -143,8 +143,9 @@ We evaluate across **four regimes** so results generalize beyond any single spea
 | --- | --- | --- | --- | --- |
 | **Parliament** | Long, **formal**, turn-clean | Malaysian Hansard debates | Existing named turns + light gold re-check | Public record — verify reuse terms |
 | **IMDA-conv** | **Conversational**, code-switch | IMDA NSC Parts 3–4 | Existing labels | IMDA agreement; Singaporean ≠ MY |
-| **Movies-style** | **Short, dense-overlap** | **Simulated** from our pool (§6.2) | Auto gold (free) | Clean — our own audio |
-| **Podcast-style** | Long, **conversational**, Manglish | Small **CC-licensed / owned** MY podcast slice | Small professional pass | No YouTube scraping; licensed or owned only |
+| **Movies** | **Short, dense-overlap** — rapid turn-taking and genuine interruptions | Small slice of real overlapping Malaysian audio — licensed local drama/TV | Manual professional pass — small but required; must capture overlap (<ovl>) + gold timestamps. Auto-labels not acceptable for an overlap eval | Licensed or owned audio only — no scraping films/TV (copyrighted). If no licensed source, this regime stays a coverage gap, flagged as a limitation |
+| **Podcast** | Long, **conversational**, Manglish | Small **CC-licensed / owned** MY podcast slice | Small professional pass | No YouTube scraping; licensed or owned only |
+| **Simulated** | **controlled overlap** | **Simulated** from our pool (§6.2) | Auto gold (free) | Clean — our own audio |
 
 Rationale: Parliament + IMDA alone miss dense overlap and conversational Manglish. **Movies-style is free** (the simulator already emits short overlap-rich clips with gold labels); only **Podcast-style** needs a small, targeted, legally-sourced + lightly-annotated slice. This closes the coverage gap without a collection program.
 
