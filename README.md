@@ -193,11 +193,3 @@ Evaluation normalization (Appendix A.2) — before scoring they strip parentheti
 | **No timestamp metric in paper** | No baseline to compare against | We define DER + boundary-F1 + onset error |
 
 **What this approach does *not* give us:** a professionally-annotated, demographically-controlled Malaysian benchmark covering all dialects and Manglish conversational speech. If evaluation coverage proves insufficient, the full data-collection track (separate proposal) is the fallback.
-
-1. Assemble a single-speaker Malay/Malaysian pool. Sources: Mesolitica/Malaya-Speech Malaysian corpora — those single-speaker clips are the "utterance pool" the simulator needs. Include Malay, Manglish (English–Malay code-switch), Mandarin, Tamil, and dialects (Kelantanese, Sabah/Sarawak) to match the real distribution.
-2. Run the §5.2 simulator unchanged to build multi-speaker conversations with ground-truth [Sxx] + timestamps. Keep 2–12 speakers, ≤80% overlap, 0–15 dB SNR, Malaysian room impulse responses if you have them.
-3. Preserve code-switching inside utterances — don't language-filter the pool; Manglish turns often switch language mid-sentence, and the model should learn that.
-4. Metrics: report WER in addition to CER (Malay is space-delimited; Tamil/Chinese portions justify CER), plus cpCER/Δcp using the paper's permutation matching and normalizer.
-5. Tokenizer check: confirm the backbone LLM's tokenizer covers Malay diacritics and Tamil/Chinese scripts well; a poor tokenizer inflates CER on non-Latin segments.
-6. Cheapest first experiment: before any training, run the released 0.9B checkpoint on Malaysian meeting audio and measure cpCER/Δcp. That baseline tells you how much its "50+ languages" already transfers, and where fine-tuning is actually needed.
-7. Hotwords for free gains: Malaysian names, place names (e.g., Putrajaya, Kementerian), and org acronyms via the 热词提示 mechanism — no training required.
