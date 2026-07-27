@@ -74,16 +74,20 @@ Prediction (correct words, but labels swapped) - [S02] hello there     [S01] goo
 
 Δcp = cpCER − CER — the extra error introduced purely by getting speakers wrong. This is their cleanest measure of diarization quality: if Δcp is near zero, transcription is right and attributed to the right speaker. A negative Δcp (they get −2.69 on Alimeeting) is a quirk of the permutation matching — it essentially means speaker attribution added no penalty.
 
-## Reference: MOSS-Transcribe-Diarize 0.9B (from the technical report, arXiv:2601.01554)
-Table 2. Results
-Metrics: CER / cpCER / Δcp (%), lower is better. Benchmarks are Mandarin/English.
+Table 2. Headline Results
+| **Dataset** | **Metric** | **Best baseline** | **MOSS** |
 
-| Dataset | CER↓ | cpCER↓ | Δcp↓ |
-|---|---|---|---|
-| AISHELL-4 | 14.84 | 15.83 | 0.99 |
-| Alimeeting | 24.86 | 22.17 | -2.69 |
-| Podcast | 5.97 | 7.37 | 1.40 |
-| Movies | 6.36 | 12.76 | 6.40 |
+|--------------|------------|-------------------|----------|
+
+| AISHELL-4 | cpCER | 24.99 (VibeVoice) | 15.83 |
+
+| AISHELL-4 | Δcp | 3.59 | 0.99 |
+
+| Podcast | cpCER | 10.23 (Gemini 2.5) | 7.37 |
+
+| Movies | cpCER | 14.73 (Gemini 3) | 12.76 |
+
+| Alimeeting | cpCER | 29.33 (VibeVoice) | 22.17 |
 
 > *Note:* Compared against Doubao, ElevenLabs Scribe v1, GPT-4o Transcribe, Gemini 2.5 Pro, Gemini 3 Pro, VibeVoice (MOSS). GPT-4o couldn't ingest the long files at all, and Gemini 3 Pro kept breaking the required output format on long audio — a "nominal capability vs. deployable capability" gap.
 
