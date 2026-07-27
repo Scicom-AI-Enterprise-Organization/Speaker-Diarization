@@ -118,3 +118,16 @@ Evaluation normalization (Appendix A.2) — before scoring they strip parentheti
 | **FLEURS (ms), Common Voice Malay** | **Weak** | Single-speaker read speech. Useful as a simulation pool, but not as diarization evaluation data. |
 
 Use IMDA Part 3 / parliament data as real multi-speaker train+test, and use Malaya-Speech/Common Voice/FLEURS as the single-speaker pool that you feed into the synthetic mixer. 
+
+## Evaluation — Malaysian multi-speaker SATS
+
+Metrics: WER (word error rate, primary for Malay/English), cpWER (concatenated min-permutation WER — joint transcription + speaker attribution), and Δcp = cpWER − WER (isolates diarization error). Lower is better for all.
+
+| System | IMDA-conv WER↓ / cpWER↓ / Δcp↓ | Parliament WER↓ / cpWER↓ / Δcp↓ | Manglish WER↓ / cpWER↓ / Δcp↓ |
+|---|---|---|---|
+| Cascaded: Whisper-large-v3 + Pyannote | — / — / — | — / — / — | — / — / — |
+| MOSS-Transcribe-Diarize 0.9B (zero-shot) | — / — / — | — / — / — | — / — / — |
+| **MOSS-Transcribe-Diarize 0.9B (fine-tuned, ours)** | — / — / — | — / — / — | — / — / — |
+
+*Test sets: IMDA-conv = IMDA NSC conversational subset; Parliament = Malaysian Hansard debates; Manglish = code-switched set. Reference numbers from the MOSS
+paper (Chinese/English benchmarks) are in the section below and are NOT directly comparable to these Malaysian sets.*
