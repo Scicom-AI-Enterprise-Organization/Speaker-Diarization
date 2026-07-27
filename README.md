@@ -127,7 +127,7 @@ Metrics: WER (word error rate, primary for Malay/English), cpWER (concatenated m
 |---|---|---|---|
 | Cascaded: Whisper-large-v3 + Pyannote | — / — / — | — / — / — | — / — / — |
 | MOSS-Transcribe-Diarize 0.9B (zero-shot) | — / — / — | — / — / — | — / — / — |
-| **MOSS-Transcribe-Diarize 0.9B (fine-tuned, ours)** | — / — / — | — / — / — | — / — / — |
+| **MOSS-Transcribe-Diarize 0.9B (fine-tuned)** | — / — / — | — / — / — | — / — / — |
 
 *Test sets: IMDA-conv = IMDA NSC conversational subset; Parliament = Malaysian Hansard debates; Manglish = code-switched set. Reference numbers from the MOSS
 paper (Chinese/English benchmarks) are in the section below and are NOT directly comparable to these Malaysian sets.*
