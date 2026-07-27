@@ -43,6 +43,8 @@ Serialized Output Training (SOT). They represent a multi-speaker conversation as
 Loss function: most likely standard next-token cross-entropy over the serialized target sequence.
 Speaker labels are relative, not global.
 
+Main limitation is a **sim-to-real gap** and **limited real eval coverage** (Section 9), which we quantify rather than hide.
+
 ## Data
 - Real Data
   - AISHELL-4 [7] — Mandarin meeting-room recordings, with both far-field (overlapping) and near-field mics. They "use the averaged channel of the far-field signals." (Far-field = room mic, hard; near-field = close mic, clean.)
