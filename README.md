@@ -132,9 +132,8 @@ Metrics: WER (word error rate, primary for Malay/English), cpWER (concatenated m
 *Test sets: IMDA-conv = IMDA NSC conversational subset; Parliament = Malaysian Hansard debates; Manglish = code-switched set. Reference numbers from the MOSS
 paper (Chinese/English benchmarks) are in the section below and are NOT directly comparable to these Malaysian sets.*
 
-## Reference: MOSS-Transcribe-Diarize 0.9B (from the technical report, arXiv:2601.01554)
-Metrics: CER / cpCER / Δcp (%), lower is better. Benchmarks are Mandarin/English —
-shown here as a capability reference, not a Malaysian result.
+## Reference: MOSS-Transcribe-Diarize 0.9B
+Metrics: CER / cpCER / Δcp (%), lower is better. Benchmarks are Mandarin/English — shown here as a capability reference.
 
 | Dataset | CER↓ | cpCER↓ | Δcp↓ |
 |---|---|---|---|
