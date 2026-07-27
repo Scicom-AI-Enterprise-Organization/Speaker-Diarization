@@ -82,7 +82,7 @@ Long-context end-to-end modeling keeps speakers consistent where cascaded/short-
 ## 6. Adapting to Malaysian speech
 
 ### 6.1 Single-speaker pool from existing corpora `[Proposed]`
-Assemble a Malaysian single-speaker pool from data we already have/can access:
+Assemble a Malaysian single-speaker pool from data can access:
 - **Mesolitica / Malaya-Speech** — large Malaysian ASR incl. code-switch (mostly single-speaker → ideal pool).
 - **Common Voice** (`ms`, `ta`, `yue`, `zh`), **FLEURS** (`ms`) — read speech.
 Keep Malay, Manglish, Mandarin, Cantonese, Hokkien, Tamil, and regional accents in the pool so mixtures match the real distribution. **Do not language-filter** — Manglish switches language mid-sentence and the model must learn that.
