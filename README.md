@@ -14,7 +14,28 @@ SATS aims to transcribe what is said and to precisely determine the timing of ea
 ## Architecture
 MOSS Transcribe Diarize couples an audio encoder with a projection module that maps multi-speaker acoustic embeddings into the feature space of a pretrained text LLM.
 
-> Audio-encoder (log-Mel spectrogram front-end) → projection → Autoregressive SpeechLLM (0.9B parameters)
+| Component         | Specification                                                                                                                                                                 |
+| ----------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Audio encoder** | **Whisper-Medium encoder** — 80 Mel bins, *d*<sub>model</sub> = 1024, 24 transformer layers, 16 attention heads                                                               |
+| **Projector**     | **VQAdaptor MLP** with **4× temporal merge**                                                                                                                                  |
+| **Text backbone** | **Qwen3-0.6B** — hidden size = 1024, 28 transformer layers, 16 attention heads, 8 KV heads (GQA), vocabulary size = 151,936, max position embeddings = 131,072 (128K context) |
+
+> Audio-encoder (log-Mel spectrogram front-end) → projection (VQAdaptor) → Autoregressive SpeechLLM (0.9B parameters)
+> log-mel input_features -> HF WhisperEncoder
+         -> 4x time merge  (B, T, 1024) -> (B, T/4, 4096)
+         -> VQAdaptor       (4096 -> 1024)
+
+Two parts:
+
+(a) 4× time merge (time_merge): the Whisper encoder outputs one 1024-dim vector per audio frame. They concatenate every 4 consecutive frames into one 4096-dim vector, cutting the sequence length by 4×: (B, T, 1024) → (B, T/4, 4096). This is set by audio_merge_size = 4.
+
+(b) VQAdaptor — the actual projector, a small 2-layer MLP:
+> nn.Sequential(
+    nn.Linear(4096, 1024, bias=True),   # adaptor_input_dim (4096) -> LM hidden (1024)
+    nn.SiLU(),                          # smooth activation function
+    nn.Linear(1024, 1024, bias=True),
+    nn.LayerNorm(1024),
+)
 
 They write the timestamp as literal text tokens. This avoids binding temporal encoding to absolute positional indices, which become sparse and ineffective over long durations, and enables accurate timestamp generation over hour-scale audio.
 Serialized Output Training (SOT). They represent a multi-speaker conversation as a single flat token stream with speaker-change tokens ([S01], [S02]) inline: [start][speaker] words [end] [start][speaker] words [end] ...
