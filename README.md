@@ -55,7 +55,7 @@ Table 1. Test sets
 | Podcast | ~2659s (≈44 min) | 2–11 | Long multi-guest YouTube interviews |
 | Movies | ~11.5s | 1–6 | Short, overlap-rich film/TV clips; Chinese+English, also Korean/Japanese/Cantonese; professionally annotated |
 
-Podcast and Movies are being open-sourced on HuggingFace.
+Podcast and Movies will be open-sourced on HuggingFace.
 
 ## Metrics
 CER (Character Error Rate) — edit distance between predicted and reference text only, ignoring speakers. Measures the ASR quality. (Character-level because Chinese has no word spaces; for Malay also report WER, word error rate, since Malay is space-delimited.) Lower is better.
