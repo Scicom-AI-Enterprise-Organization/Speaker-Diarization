@@ -44,14 +44,15 @@ CER (Character Error Rate) — edit distance between predicted and reference tex
 cpCER (concatenated minimum-permutation CER) — evaluates ASR and diarization jointly. Because speaker labels are relative, it tries all permutations of predicted speaker labels and picks the one giving the lowest error (an optimal assignment / Hungarian-style matching), then computes CER on the speaker-attributed transcript. This is the headline "whole-system" number.
 Δcp = cpCER − CER — the extra error introduced purely by getting speakers wrong. This is their cleanest measure of diarization quality: if Δcp is near zero, transcription is right and attributed to the right speaker. A negative Δcp (they get −2.69 on Alimeeting) is a quirk of the permutation matching — it essentially means speaker attribution added no penalty.
 
-Model	AISHELL‑4	Alimeeting	Podcast	Movies
-CER↓	cpCER↓	Δcp↓	CER↓	cpCER↓	Δcp↓	CER↓	cpCER↓	Δcp↓	CER↓	cpCER↓	Δcp↓
-Doubao	18.18	27.86	9.68	25.25	37.57	12.31	7.93	10.54	2.61	9.94	30.88	20.94
-ElevenLabs	19.58	37.95	18.36	25.70	36.69	10.99	8.50	11.34	2.85	11.49	17.85	6.37
-GPT-4o	-	-	-	-	-	-	-	-	-	14.37	23.67	9.31
-Gemini 2.5 Pro	42.70	53.42	10.72	27.43	41.64	14.21	7.38	10.23	2.85	15.46	24.15	8.69
-Gemini 3 Pro	22.75	27.43	4.68	26.75	32.84	6.09	-	-	-	8.62	14.73	6.11
-VIBEVOICE ASR	21.40	24.99	3.59	27.40	29.33	1.93	27.94	48.30	20.36	14.59	42.54	27.94
-MOSS Transcribe Diarize 0.9B	14.84	15.83	0.99	24.86	22.17	-2.69	5.97	7.37	1.40	6.36	12.76	6.40
-MOSS Transcribe Diarize Pro	13.78	14.02	0.24	18.22	13.94	-4.27	4.46	6.97	2.51	5.86	11.78	5.92
+Table 2. Headline results
+| **Dataset** | **Metric** | **Best baseline** | **MOSS** |
+|--------------|------------|-------------------|-----------------|
+| AISHELL-4 | cpCER | 24.99 (VibeVoice) | 15.83 |
+| AISHELL-4 | Δcp | 3.59 | 0.99 |
+| Podcast | cpCER | 10.23 (Gemini 2.5) | 7.37 |
+| Movies | cpCER | 14.73 (Gemini 3) | 12.76 |
+| Alimeeting | cpCER | 29.33 (VibeVoice) | 22.17 |
+*Note:* Compared against Doubao, ElevenLabs Scribe v1, GPT-4o Transcribe, Gemini 2.5 Pro, Gemini 3 Pro, VibeVoice (MOSS). GPT-4o couldn't ingest the long files at all, and Gemini 3 Pro kept breaking the required output format on long audio — a "nominal capability vs. deployable capability" gap.
+
+Long-context end-to-end modeling keeps speakers consistent where cascaded/short-context systems drift.
 
