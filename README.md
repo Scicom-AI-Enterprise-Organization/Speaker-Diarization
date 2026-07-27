@@ -29,27 +29,10 @@ log-mel input_features → WhisperEncoder
     → Qwen3-0.6B     → [start][Sxx] text [end] ...
 ```
 
-- **Timestamps as text `[Paper]`** — emitted as literal tokens (plain BPE digits `[Code]`), so timestamping is ordinary next-token prediction; generalizes to hour-scale audio.
+- **Timestamps as text** — emitted as literal tokens (plain BPE digits `[Code]`), so timestamping is ordinary next-token prediction; generalizes to hour-scale audio.
 - **Serialized Output Training (SOT)** [10] — a conversation is one flat stream: `[start][Sxx] words [end] …`.
-- **Speaker labels are relative `[Paper]`** — `[S01]` = "voice #1 in this file," not a named identity.
-- **Loss** — inferred next-token cross-entropy over the serialized target; **not stated `[Paper]`**.
-
-Two parts:
-
-(a) 4× time merge (time_merge): the Whisper encoder outputs one 1024-dim vector per audio frame. They concatenate every 4 consecutive frames into one 4096-dim vector, cutting the sequence length by 4×: (B, T, 1024) → (B, T/4, 4096). This is set by audio_merge_size = 4.
-
-(b) VQAdaptor — the actual projector, a small 2-layer MLP:
-> nn.Sequential(
-    nn.Linear(4096, 1024, bias=True),   # adaptor_input_dim (4096) -> LM hidden (1024)
-    nn.SiLU(),                          # smooth activation function
-    nn.Linear(1024, 1024, bias=True),
-    nn.LayerNorm(1024),
-)
-
-They write the timestamp as literal text tokens. This avoids binding temporal encoding to absolute positional indices, which become sparse and ineffective over long durations, and enables accurate timestamp generation over hour-scale audio.
-Serialized Output Training (SOT). They represent a multi-speaker conversation as a single flat token stream with speaker-change tokens ([S01], [S02]) inline: [start][speaker] words [end] [start][speaker] words [end] ...
-Loss function: most likely standard next-token cross-entropy over the serialized target sequence.
-Speaker labels are relative, not global.
+- **Speaker labels are relative** — `[S01]` = "voice #1 in this file," not a named identity.
+- **Loss** — inferred next-token cross-entropy over the serialized target; **not stated**.
 
 Main limitation is a **sim-to-real gap** and **limited real eval coverage** (Section 9).
 
