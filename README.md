@@ -58,3 +58,22 @@ Table 2. Headline results
 
 Long-context end-to-end modeling keeps speakers consistent where cascaded/short-context systems drift.
 
+## I/O format
+Prompt (default, Chinese):
+"请将音频转写为文本，每一段需以起始时间戳和说话人编号（[S01]、[S02]、[S03]…）开头，正文为对应的语音内容，并在段末标注结束时间戳。"
+("Transcribe the audio; each segment starts with a start timestamp and speaker ID, then the speech content, and ends with an end timestamp.")
+
+Hotword prompting — append 热词提示：hotword1, hotword2, hotword3 to bias toward domain terms (names, jargon). Purely prompt-based, no retraining.
+
+Output: [start_time][Sxx] transcribed speech [end_time], and it can also emit <emotion>, <event>, <ovl> (overlap), <ins> tags.
+
+Evaluation normalization (Appendix A.2) — before scoring they strip parentheticals \s*\(.*?\), angle-tags <.*?>, and non-speaker brackets \[(?!S\d+\]).*?\], keeping only [Sxx] tags and text. This normalizer must be replicated or CER numbers won't be comparable.
+
+## Adapting to Malaysian speech
+1. Assemble a single-speaker Malay/Malaysian pool. Sources: Mesolitica/Malaya-Speech Malaysian corpora — those single-speaker clips are the "utterance pool" the simulator needs. Include Malay, Manglish (English–Malay code-switch), Mandarin, Tamil, and dialects (Kelantanese, Sabah/Sarawak) to match the real distribution.
+2. Run the §5.2 simulator unchanged to build multi-speaker conversations with ground-truth [Sxx] + timestamps. Keep 2–12 speakers, ≤80% overlap, 0–15 dB SNR, Malaysian room impulse responses if you have them.
+3. Preserve code-switching inside utterances — don't language-filter the pool; Manglish turns often switch language mid-sentence, and the model should learn that.
+4. Metrics: report WER in addition to CER (Malay is space-delimited; Tamil/Chinese portions justify CER), plus cpCER/Δcp using the paper's permutation matching and normalizer.
+5. Tokenizer check: confirm the backbone LLM's tokenizer covers Malay diacritics and Tamil/Chinese scripts well; a poor tokenizer inflates CER on non-Latin segments.
+6. Cheapest first experiment: before any training, run the released 0.9B checkpoint on Malaysian meeting audio and measure cpCER/Δcp. That baseline tells you how much its "50+ languages" already transfers, and where fine-tuning is actually needed.
+7. Hotwords for free gains: Malaysian names, place names (e.g., Putrajaya, Kementerian), and org acronyms via the 热词提示 mechanism — no training required.
