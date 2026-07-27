@@ -76,17 +76,11 @@ Prediction (correct words, but labels swapped) - [S02] hello there     [S01] goo
 
 Table 2. Headline Results
 | **Dataset** | **Metric** | **Best baseline** | **MOSS** |
-
 |--------------|------------|-------------------|----------|
-
 | AISHELL-4 | cpCER | 24.99 (VibeVoice) | 15.83 |
-
 | AISHELL-4 | Δcp | 3.59 | 0.99 |
-
 | Podcast | cpCER | 10.23 (Gemini 2.5) | 7.37 |
-
 | Movies | cpCER | 14.73 (Gemini 3) | 12.76 |
-
 | Alimeeting | cpCER | 29.33 (VibeVoice) | 22.17 |
 
 > *Note:* Compared against Doubao, ElevenLabs Scribe v1, GPT-4o Transcribe, Gemini 2.5 Pro, Gemini 3 Pro, VibeVoice (MOSS). GPT-4o couldn't ingest the long files at all, and Gemini 3 Pro kept breaking the required output format on long audio — a "nominal capability vs. deployable capability" gap.
