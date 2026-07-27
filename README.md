@@ -3,7 +3,7 @@
 
 SATS aims to transcribe what is said and to precisely determine the timing of each speaker.
 
-## Motivation
+## 1. Motivation
 | **Approach**           | **What it does**                                                                                                                           | **Limitation**                                                                                                                         |
 | ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | **DiarizationLM** [20] | LLM post-processes ASR+diarization outputs to fix speaker permutations | Non end-to-end — inherits cascade errors  |
@@ -11,7 +11,7 @@ SATS aims to transcribe what is said and to precisely determine the timing of ea
 | **SpeakerLM** [21]     | Single MLLM with speaker-aware modeling                            | Limited to short audio (~50–90s) and ≤4 speakers; no explicit timestamps                      |
 | **JEDIS-LLM** [17]     | Trains on ≤20s clips but streams over long audio via a **Speaker Prompt Cache** | Still chunk-wise; needs extra cache/alignment machinery for global consistency |
 
-## Architecture
+## 2. Architecture
 MOSS Transcribe Diarize couples an audio encoder with a projection module that maps multi-speaker acoustic embeddings into the feature space of a pretrained text LLM.
 
 | Component         | Specification                                                                                                                                                                 |
@@ -36,7 +36,7 @@ log-mel input_features → WhisperEncoder
 
 Main limitation is a **sim-to-real gap** and **limited real eval coverage** (Section 9).
 
-## Data
+## 3. Data
 - Real Data
   - AISHELL-4 [7] — Mandarin meeting-room recordings, with both far-field (overlapping) and near-field mics. They "use the averaged channel of the far-field signals." (Far-field = room mic, hard; near-field = close mic, clean.)
   - They curated Podcast and Movies sets (used as test sets here).
@@ -47,7 +47,7 @@ Main limitation is a **sim-to-real gap** and **limited real eval coverage** (Sec
   - Snap segment boundaries to nearby low-energy points and apply 50 ms cross-fades (so cuts don't click/pop).
   - Augment with real-world noise and reverberation; sample SNR uniformly from 0–15 dB. (lower = noisier, 0 dB means noise as loud as speech)
 
-## Evaluation
+## 4. Evaluation
 Table 1. Test sets
 | **Dataset** | **Avg duration** | **# speakers** | **Character** |
 |--------------|------------------|----------------|---------------|
@@ -57,7 +57,7 @@ Table 1. Test sets
 
 Podcast and Movies will be open-sourced on HuggingFace.
 
-## Metrics
+## 5. Metrics
 CER (Character Error Rate) — edit distance between predicted and reference text only, ignoring speakers. Measures the ASR quality. (Character-level because Chinese has no word spaces; for Malay also report WER, word error rate, since Malay is space-delimited.) Lower is better.
 cpCER (concatenated minimum-permutation CER) — evaluates ASR and diarization jointly. Because speaker labels are relative, it tries all permutations of predicted speaker labels and picks the one giving the lowest error (an optimal assignment / Hungarian-style matching), then computes CER on the speaker-attributed transcript. This is the headline "whole-system" number. 
 
@@ -80,7 +80,7 @@ Table 2. Headline Results
 
 Long-context end-to-end modeling keeps speakers consistent where cascaded/short-context systems drift.
 
-## I/O format
+## 6. I/O format
 Prompt (default, Chinese):
 >"请将音频转写为文本，每一段需以起始时间戳和说话人编号（[S01]、[S02]、[S03]…）开头，正文为对应的语音内容，并在段末标注结束时间戳。"
 >("Transcribe the audio; each segment starts with a start timestamp and speaker ID, then the speech content, and ends with an end timestamp.")
@@ -93,7 +93,121 @@ Output:
 
 Evaluation normalization (Appendix A.2) — before scoring they strip parentheticals \s*\(.*?\), angle-tags <.*?>, and non-speaker brackets \[(?!S\d+\]).*?\], keeping only [Sxx] tags and text. This normalizer must be replicated or CER numbers won't be comparable.
 
-## Adapting to Malaysian speech
+## 7. Adapting to Malaysian speech
+
+### 7.1 Single-speaker pool from existing corpora [Proposed]
+Assemble a Malaysian single-speaker pool from data we already have/can access — **no new recording**:
+- **Mesolitica / Malaya-Speech** `[Internal]` — large Malaysian ASR incl. code-switch (mostly single-speaker → ideal pool).
+- **Common Voice** (`ms`, `ta`, `yue`, `zh`), **FLEURS** (`ms`) — read speech.
+Keep Malay, Manglish, Mandarin, Cantonese, Hokkien, Tamil, and regional accents in the pool so mixtures match the real distribution. **Do not language-filter** — Manglish switches language mid-sentence and the model must learn that.
+
+### 7.2 Synthetic multi-speaker via the §3.2 simulator (the key move) [Paper] recipe
+Run the paper's mixer **unchanged** on our pool to produce labeled multi-speaker conversations:
+- Draw **2–12 speakers**, one utterance each; cut into word-runs (log-normal weights).
+- One timeline, Gaussian gaps, speaker alternation, **overlap ≤80%** of shorter segment.
+- Snap boundaries to low-energy points + 50 ms cross-fades.
+- Augment with noise/reverb; **SNR ~ U(0,15) dB** (Malaysian room impulse responses if available).
+Every mixture ships with ground-truth `[start][Sxx] text [end]` **for free** — this is what removes the annotation cost.
+
+### 7.3 Existing *labeled* multi-speaker for real anchor + eval `[Proposed]`
+- **Malaysian Parliament / Hansard** `[Internal]` — multi-speaker, named turns, timing → real diarization anchor + a natural eval slice (formal register).
+- **IMDA NSC Parts 3–6** — conversational, multi-speaker, code-switch (Singaporean ≈ but ≠ Malaysian).
+Use these as (a) a small real fine-tuning anchor to reduce sim-to-real gap, and (b) the evaluation set. A **modest professional re-check** of a few hours for the gold eval is the only manual labeling — far cheaper than annotating a full corpus.
+
+---
+
+## 8. Datasets we already have / can access
+
+| Resource | Role here | Note |
+| --- | --- | --- |
+| **Mesolitica / Malaya-Speech** `[Internal]` | Simulation pool (primary) | Large MY ASR + code-switch; mostly single-speaker |
+| **Malaysian Parliament / Hansard** `[Internal]` | Real anchor + eval | Multi-speaker, named turns, timed; formal register |
+| **IMDA NSC Parts 3–6** | Real anchor + eval | Conversational, code-switch; Singaporean |
+| **Common Voice** (`ms`,`ta`,`yue`,`zh`) | Simulation pool | Read speech |
+| **FLEURS** (`ms`) | Simulation pool | Read speech, small |
+
+> Replace `[Internal]` rows with SciCom's actual inventory — the plan is agnostic to which single-speaker corpus feeds the mixer.
+
+---
+
+## 9. Implementation plan (lightweight, no collection)
+
+1. **Baseline.** Run released 0.9B zero-shot on a Parliament/IMDA slice; report cpCER/Δcp — tells us where fine-tuning is actually needed. `[Proposed]`
+2. **Build the mixer + scorer.** Implement §3.2 simulation and the A.2 normalizer; validate the scorer by reproducing an AISHELL-4 number.
+3. **Generate SUARA-Sim** from the pool (Section 4.1–4.2).
+4. **Fine-tune (LoRA).** Freeze Whisper encoder `[Code]`, LoRA on Qwen3; short-context first, then RoPE-extend. Train on Sim + small real anchor.
+5. **Evaluate** (Section 7) and iterate on the real:sim ratio.
+
+**Ablations worth running `[Proposed]`:** real:sim ratio · encoder frozen vs tuned · 4× vs 2× time-merge · with/without hotwords.
+
+---
+
+## 10. Metrics & evaluation
+
+- **CER** `[Paper]` — character edit distance, text only (ASR quality). *For Malay/English also report **WER** (space-delimited).*
+- **cpCER** `[Paper]` — concatenated **minimum-permutation** CER: tries all speaker-label permutations (Hungarian matching), then scores. The whole-system number.
+  - *Example:* Ref `[S01] hello there [S02] good morning`; Pred (labels swapped) `[S02] hello there [S01] good morning` → cpCER = 0 after matching.
+- **Δcp = cpCER − CER** `[Paper]` — isolates diarization penalty. A **negative Δcp** (−2.69 on Alimeeting) is an artifact of how CER linearizes overlap: grouping by speaker aligns better than the time-ordered concatenation — attribution is effectively "free," not that diarization improved transcription.
+- **Add (paper omits these) `[Proposed]`:** **DER** (collar 0.25), **boundary-F1**, **timestamp onset/offset error** — the "time-stamped" claim is otherwise unmeasured.
+- **Normalizer:** replicate Appendix A.2 exactly (strip `\s*\(.*?\)`, `<.*?>`, non-speaker `\[(?!S\d+\]).*?\]`) or numbers aren't comparable.
+
+### Evaluation coverage `[Proposed]`
+
+We evaluate across **four regimes** so results generalize beyond any single speaking style. Two exist already; two mirror the paper's Podcast/Movies archetypes — sourced legally (not by scraping, unlike the paper's YouTube/film sets).
+
+| Eval set | Regime it covers | Source | Annotation | Legal note |
+| --- | --- | --- | --- | --- |
+| **Parliament** | Long, **formal**, turn-clean | Malaysian Hansard `[Internal]` | Existing named turns + light gold re-check | Public record — verify reuse terms |
+| **IMDA-conv** | **Conversational**, code-switch | IMDA NSC Parts 3–4 | Existing labels | IMDA agreement; Singaporean ≠ MY |
+| **Movies-style** | **Short, dense-overlap** | **Simulated** from our pool (§4.2) | Auto gold (free) | Clean — our own audio |
+| **Podcast-style** | Long, **conversational**, Manglish | Small **CC-licensed / owned** MY podcast slice | Small professional pass | No YouTube scraping; licensed or owned only |
+
+Rationale: Parliament + IMDA alone miss dense overlap and conversational Manglish — the two regimes closest to real SciCom deployment. **Movies-style is free** (the simulator already emits short overlap-rich clips with gold labels); only **Podcast-style** needs a small, targeted, legally-sourced + lightly-annotated slice. This closes the coverage gap without a collection program.
+
+### Results scaffold (fill as we run)
+
+Compact view (headline joint metrics; full CER/WER/cpCER/Δcp/DER reported per set separately).
+
+| System | Parliament cpWER↓ / DER↓ | IMDA-conv cpWER↓ / DER↓ | Movies-style cpWER↓ / DER↓ | Podcast-style cpWER↓ / DER↓ |
+| --- | --- | --- | --- | --- |
+| Cascade: Whisper-large-v3 + Pyannote 3.1 | — | — | — | — |
+| MOSS 0.9B (zero-shot) | — | — | — | — |
+| **MOSS 0.9B (LoRA on Sim + anchor)** | — | — | — | — |
+
+> Read **per column** (per regime) — cpWER/DER are not comparable across regimes (overlap density and register differ). Small dialect/Podcast slices → report variance / CIs.
+
+### Reference — MOSS 0.9B reported `[Paper]` (Mandarin/English; not directly comparable)
+
+| Dataset | CER↓ | cpCER↓ | Δcp↓ |
+| --- | --- | --- | --- |
+| AISHELL-4 | 14.84 | 15.83 | 0.99 |
+| Alimeeting | 24.86 | 22.17 | −2.69 |
+| Podcast | 5.97 | 7.37 | 1.40 |
+| Movies | 6.36 | 12.76 | 6.40 |
+
+---
+
+## 10. I/O format `[Paper]`
+
+- **Prompt (default, Chinese):** *"请将音频转写为文本，每一段需以起始时间戳和说话人编号（[S01]、[S02]…）开头…"*
+- **Hotwords (free gains):** append `热词提示：Putrajaya, KWSP, Petronas, …` — biases toward Malaysian names/orgs, no retraining.
+- **Output:** `[start][Sxx] text [end]`, plus optional `<emotion> <event> <ovl> <ins>` tags (stripped at scoring).
+
+---
+
+## 11. Risks & limitations (stated, not hidden)
+
+| Risk | Impact | Mitigation |
+| --- | --- | --- |
+| **Sim-to-real gap** | Synthetic mixtures lack real prosody/turn dynamics | Small real anchor (Parliament/IMDA); ablate real:sim ratio |
+| **Eval coverage** | Four regimes (§7) help, but the **Podcast-style** Manglish slice is small and **Movies-style is synthetic** (not real overlap) | Report per-regime variance/CIs; treat Podcast-style as indicative until enlarged; keep the full-collection track as fallback |
+| **Existing-corpus licensing** | Reuse/redistribution limits | Verify each license; keep training vs release separate |
+| **Whisper-medium encoder ceiling `[Code]`** | Weaker on Tamil/Hokkien | Ablate large-v3 encoder swap |
+| **Unreported training recipe `[Paper]`** | Reproduction uncertainty | Reverse-engineer curriculum; log everything |
+| **No timestamp metric in paper** | No baseline to compare against | We define DER + boundary-F1 + onset error |
+
+**What this approach does *not* give us:** a professionally-annotated, demographically-controlled Malaysian benchmark covering all dialects and Manglish conversational speech. If evaluation coverage proves insufficient, the full data-collection track (separate proposal) is the fallback.
+
 1. Assemble a single-speaker Malay/Malaysian pool. Sources: Mesolitica/Malaya-Speech Malaysian corpora — those single-speaker clips are the "utterance pool" the simulator needs. Include Malay, Manglish (English–Malay code-switch), Mandarin, Tamil, and dialects (Kelantanese, Sabah/Sarawak) to match the real distribution.
 2. Run the §5.2 simulator unchanged to build multi-speaker conversations with ground-truth [Sxx] + timestamps. Keep 2–12 speakers, ≤80% overlap, 0–15 dB SNR, Malaysian room impulse responses if you have them.
 3. Preserve code-switching inside utterances — don't language-filter the pool; Manglish turns often switch language mid-sentence, and the model should learn that.
