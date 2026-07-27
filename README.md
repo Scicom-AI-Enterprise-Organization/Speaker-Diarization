@@ -1,5 +1,6 @@
 # SATS — Speaker-Attributed, Time-Stamped Transcription
 > Link: https://huggingface.co/OpenMOSS-Team/MOSS-Transcribe-Diarize
+
 SATS aims to transcribe what is said and to precisely determine the timing of each speaker.
 
 ## Motivation
