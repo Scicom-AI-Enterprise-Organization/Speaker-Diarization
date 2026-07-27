@@ -169,8 +169,6 @@ Compact view (headline joint metrics; full CER/WER/cpCER/Δcp/DER reported per s
 - **Hotwords (free gains):** append `热词提示：Putrajaya, KWSP, Petronas, …` — biases toward Malaysian names/orgs, no retraining.
 - **Output:** `[start_time][Sxx] text [end_time]`, plus optional `<emotion> <event> <ovl> (overlap) <ins>` tags (stripped at scoring).
 
-Evaluation normalization (Appendix A.2) — before scoring they strip parentheticals \s*\(.*?\), angle-tags <.*?>, and non-speaker brackets \[(?!S\d+\]).*?\], keeping only [Sxx] tags and text. This normalizer must be replicated or CER numbers won't be comparable.
-
 ---
 
 ## 11. Risks & limitations
