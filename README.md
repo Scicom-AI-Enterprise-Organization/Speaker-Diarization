@@ -53,15 +53,7 @@ Table 1. Test sets
 
 Podcast and Movies will be open-sourced on HuggingFace.
 
-## 5. Metrics
-CER (Character Error Rate) — edit distance between predicted and reference text only, ignoring speakers. Measures the ASR quality. (Character-level because Chinese has no word spaces; for Malay also report WER, word error rate, since Malay is space-delimited.) Lower is better.
-cpCER (concatenated minimum-permutation CER) — evaluates ASR and diarization jointly. Because speaker labels are relative, it tries all permutations of predicted speaker labels and picks the one giving the lowest error (an optimal assignment / Hungarian-style matching), then computes CER on the speaker-attributed transcript. This is the headline "whole-system" number. 
-
-Example: 
-Ref - [S01] hello there     [S02] good morning; 
-Prediction (correct words, but labels swapped) - [S02] hello there     [S01] good morning
-
-Δcp = cpCER − CER — the extra error introduced purely by getting speakers wrong. This is their cleanest measure of diarization quality: if Δcp is near zero, transcription is right and attributed to the right speaker. A negative Δcp (they get −2.69 on Alimeeting) is a quirk of the permutation matching — it essentially means speaker attribution added no penalty.
+## 5. Results
 
 Table 2. Headline Results
 | **Dataset** | **Metric** | **Best baseline** | **MOSS** |
