@@ -60,12 +60,14 @@ Long-context end-to-end modeling keeps speakers consistent where cascaded/short-
 
 ## I/O format
 Prompt (default, Chinese):
-"请将音频转写为文本，每一段需以起始时间戳和说话人编号（[S01]、[S02]、[S03]…）开头，正文为对应的语音内容，并在段末标注结束时间戳。"
-("Transcribe the audio; each segment starts with a start timestamp and speaker ID, then the speech content, and ends with an end timestamp.")
+>"请将音频转写为文本，每一段需以起始时间戳和说话人编号（[S01]、[S02]、[S03]…）开头，正文为对应的语音内容，并在段末标注结束时间戳。"
+>("Transcribe the audio; each segment starts with a start timestamp and speaker ID, then the speech content, and ends with an end timestamp.")
 
-Hotword prompting — append 热词提示：hotword1, hotword2, hotword3 to bias toward domain terms (names, jargon). Purely prompt-based, no retraining.
+Hotword prompting — append a short hint to bias toward domain terms (names, jargon). Purely prompt-based, no retraining.
+> 热词提示：hotword1, hotword2, hotword3
 
-Output: [start_time][Sxx] transcribed speech [end_time], and it can also emit <emotion>, <event>, <ovl> (overlap), <ins> tags.
+Output: 
+> [start_time][Sxx] transcribed speech [end_time], and it can also emit <emotion>, <event>, <ovl> (overlap), <ins> tags.
 
 Evaluation normalization (Appendix A.2) — before scoring they strip parentheticals \s*\(.*?\), angle-tags <.*?>, and non-speaker brackets \[(?!S\d+\]).*?\], keeping only [Sxx] tags and text. This normalizer must be replicated or CER numbers won't be comparable.
 
