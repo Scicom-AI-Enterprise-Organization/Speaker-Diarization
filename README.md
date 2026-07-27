@@ -16,11 +16,11 @@ MOSS Transcribe Diarize couples an audio encoder with a projection module that m
 
 | Component         | Specification                                                                                                                                                                 |
 | ----------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Audio encoder** | **Whisper-Medium encoder** — 80 Mel bins, *d*<sub>model</sub> = 1024, 24 transformer layers, 16 attention heads                                                               |
-| **Projector**     | **VQAdaptor MLP** with **4× temporal merge**                                                                                                                                  |
-| **Text backbone** | **Qwen3-0.6B** — hidden size = 1024, 28 transformer layers, 16 attention heads, 8 KV heads (GQA), vocabulary size = 151,936, max position embeddings = 131,072 (128K context) |
+| **Audio encoder** | **Whisper-Medium encoder** — 80 Mel bins, *d*<sub>model</sub> = 1024, 24 transformer layers, 16 attention heads (~307 M)                                                              |
+| **Projector**     | **VQAdaptor 2-layer MLP** with **4× temporal merge** (~5 M)                                                                                                                                 |
+| **Text backbone** | **Qwen3-0.6B** — hidden size = 1024, 28 transformer layers, 16 attention heads, 8 KV heads (GQA), vocabulary size = 151,936, max position embeddings = 131,072 (128K context) (~596 M) |
 
-_Note:_ "0.9B" ≈ Whisper-Medium encoder (~0.3B) + Qwen3-0.6B.
+_Note:_ "0.9B" ≈ Whisper-Medium encoder (~0.3B) + VQAdaptor + Qwen3-0.6B.
 > Audio-encoder (log-Mel spectrogram front-end) → projection (VQAdaptor) → Autoregressive SpeechLLM (0.9B parameters)
 > log-mel input_features -> HF WhisperEncoder
          -> 4x time merge  (B, T, 1024) -> (B, T/4, 4096)
