@@ -188,7 +188,7 @@ Evaluation normalization (Appendix A.2) — before scoring they strip parentheti
 | **Sim-to-real gap** | Synthetic mixtures lack real prosody/turn dynamics | Small real anchor (Parliament/IMDA); ablate real:sim ratio |
 | **Eval coverage** | Four regimes help, but the **Podcast-style** Manglish slice is small and **Movies-style is synthetic** (not real overlap) | Report per-regime variance/CIs; treat Podcast-style as indicative until enlarged; keep the full-collection track as fallback |
 | **Existing-corpus licensing** | Reuse/redistribution limits | Verify each license; keep training vs release separate |
-| **Whisper-medium encoder ceiling ** | Weaker on Tamil/Hokkien | Ablate large-v3 encoder swap |
+| **Whisper-medium encoder ceiling** | Weaker on Tamil/Hokkien | Ablate large-v3 encoder swap |
 | **Unreported training recipe `[Paper]`** | Reproduction uncertainty | Reverse-engineer curriculum; log everything |
 | **No timestamp metric in paper** | No baseline to compare against | We define DER + boundary-F1 + onset error |
 
