@@ -66,7 +66,12 @@ Podcast and Movies are being open-sourced on HuggingFace.
 
 ## Metrics
 CER (Character Error Rate) — edit distance between predicted and reference text only, ignoring speakers. Measures the ASR quality. (Character-level because Chinese has no word spaces; for Malay also report WER, word error rate, since Malay is space-delimited.) Lower is better.
-cpCER (concatenated minimum-permutation CER) — evaluates ASR and diarization jointly. Because speaker labels are relative, it tries all permutations of predicted speaker labels and picks the one giving the lowest error (an optimal assignment / Hungarian-style matching), then computes CER on the speaker-attributed transcript. This is the headline "whole-system" number.
+cpCER (concatenated minimum-permutation CER) — evaluates ASR and diarization jointly. Because speaker labels are relative, it tries all permutations of predicted speaker labels and picks the one giving the lowest error (an optimal assignment / Hungarian-style matching), then computes CER on the speaker-attributed transcript. This is the headline "whole-system" number. 
+
+Example: 
+Ref - [S01] hello there     [S02] good morning; 
+Prediction (correct words, but labels swapped) - [S02] hello there     [S01] good morning
+
 Δcp = cpCER − CER — the extra error introduced purely by getting speakers wrong. This is their cleanest measure of diarization quality: if Δcp is near zero, transcription is right and attributed to the right speaker. A negative Δcp (they get −2.69 on Alimeeting) is a quirk of the permutation matching — it essentially means speaker attribution added no penalty.
 
 Table 2. Headline results
@@ -103,3 +108,13 @@ Evaluation normalization (Appendix A.2) — before scoring they strip parentheti
 5. Tokenizer check: confirm the backbone LLM's tokenizer covers Malay diacritics and Tamil/Chinese scripts well; a poor tokenizer inflates CER on non-Latin segments.
 6. Cheapest first experiment: before any training, run the released 0.9B checkpoint on Malaysian meeting audio and measure cpCER/Δcp. That baseline tells you how much its "50+ languages" already transfers, and where fine-tuning is actually needed.
 7. Hotwords for free gains: Malaysian names, place names (e.g., Putrajaya, Kementerian), and org acronyms via the 热词提示 mechanism — no training required.
+
+## Malay Datasets - options closest to AISHELL-4
+| Resource | Match to AISHELL-4 | Notes |
+|----------|--------------------|-------|
+| **IMDA National Speech Corpus (Singapore), Parts 3–6** | **Best** | Conversational, multi-speaker, includes Malay and heavy code-switching (Manglish/Singlish). Parts 3–4 contain two-person conversations with timestamps, making them suitable for real diarization. |
+| **Malaysian Parliament / Hansard recordings** | **Good** | Debate recordings with multiple speakers, named speaker turns, and timing. Mesolitica has released Malaysian Parliament speech datasets, making this a strong AISHELL-4 analogue for diarization training. |
+| **Mesolitica / Malaya-Speech corpora** | **Good for the pool** | Large Malaysian ASR datasets, including code-switching. Mostly single-speaker recordings, making them ideal as the utterance pool for the synthetic simulator (§6), rather than as ready-made meeting data. |
+| **FLEURS (ms), Common Voice Malay** | **Weak** | Single-speaker read speech. Useful as a simulation pool, but not as diarization evaluation data. |
+
+Use IMDA Part 3 / parliament data as real multi-speaker train+test, and use Malaya-Speech/Common Voice/FLEURS as the single-speaker pool that you feed into the synthetic mixer. 
