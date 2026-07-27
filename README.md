@@ -1,4 +1,5 @@
 # SATS — Speaker-Attributed, Time-Stamped Transcription
+## Part I. Paper summary
 > Link: https://huggingface.co/OpenMOSS-Team/MOSS-Transcribe-Diarize
 
 SATS aims to transcribe what is said and to precisely determine the timing of each speaker.
@@ -40,12 +41,7 @@ Main limitation is a **sim-to-real gap** and **limited real eval coverage** (Sec
 - Real Data
   - AISHELL-4 [7] — Mandarin meeting-room recordings, with both far-field (overlapping) and near-field mics. They "use the averaged channel of the far-field signals." (Far-field = room mic, hard; near-field = close mic, clean.)
   - They curated Podcast and Movies sets (used as test sets here).
-- Simulated Data:
-  - Draw 2–12 distinct speakers per synthetic dialogue; pick one utterance each from a single-speaker pool.
-  - Cut each utterance into contiguous word runs: sample a segment count and log-normal weights (so segment lengths look natural — many short, few long).
-  - Lay all segments on one timeline with Gaussian-distributed inter-segment gaps, enforcing speaker alternation but allowing overlaps capped at 80% of the shorter segment.
-  - Snap segment boundaries to nearby low-energy points and apply 50 ms cross-fades (so cuts don't click/pop).
-  - Augment with real-world noise and reverberation; sample SNR uniformly from 0–15 dB. (lower = noisier, 0 dB means noise as loud as speech)
+- Simulated Data
 
 ## 4. Evaluation
 Table 1. Test sets
@@ -80,45 +76,33 @@ Table 2. Headline Results
 
 Long-context end-to-end modeling keeps speakers consistent where cascaded/short-context systems drift.
 
-## 6. I/O format
-Prompt (default, Chinese):
->"请将音频转写为文本，每一段需以起始时间戳和说话人编号（[S01]、[S02]、[S03]…）开头，正文为对应的语音内容，并在段末标注结束时间戳。"
->("Transcribe the audio; each segment starts with a start timestamp and speaker ID, then the speech content, and ends with an end timestamp.")
-
-Hotword prompting — append a short hint to bias toward domain terms (names, jargon). Purely prompt-based, no retraining.
-> 热词提示：hotword1, hotword2, hotword3
-
-Output: 
-> [start_time][Sxx] transcribed speech [end_time], and it can also emit <emotion>, <event>, <ovl> (overlap), <ins> tags.
-
-Evaluation normalization (Appendix A.2) — before scoring they strip parentheticals \s*\(.*?\), angle-tags <.*?>, and non-speaker brackets \[(?!S\d+\]).*?\], keeping only [Sxx] tags and text. This normalizer must be replicated or CER numbers won't be comparable.
-
 ---
 
-## 7. Adapting to Malaysian speech
+## 6. Adapting to Malaysian speech
+## Part 2. Malaysian adaptation
 
-### 7.1 Single-speaker pool from existing corpora [Proposed]
-Assemble a Malaysian single-speaker pool from data we already have/can access — **no new recording**:
+### 6.1 Single-speaker pool from existing corpora `[Proposed]`
+Assemble a Malaysian single-speaker pool from data we already have/can access:
 - **Mesolitica / Malaya-Speech** — large Malaysian ASR incl. code-switch (mostly single-speaker → ideal pool).
 - **Common Voice** (`ms`, `ta`, `yue`, `zh`), **FLEURS** (`ms`) — read speech.
 Keep Malay, Manglish, Mandarin, Cantonese, Hokkien, Tamil, and regional accents in the pool so mixtures match the real distribution. **Do not language-filter** — Manglish switches language mid-sentence and the model must learn that.
 
-### 7.2 Synthetic multi-speaker via the §3.2 simulator `[Paper]` recipe
+### 6.2 Synthetic multi-speaker via the §3.2 simulator `[Paper]` recipe
 Run the paper's mixer **unchanged** on our pool to produce labeled multi-speaker conversations:
 - Draw **2–12 speakers**, one utterance each; cut into word-runs (log-normal weights).
 - One timeline, Gaussian gaps, speaker alternation, **overlap ≤80%** of shorter segment.
 - Snap boundaries to low-energy points + 50 ms cross-fades.
 - Augment with noise/reverb; **SNR ~ U(0,15) dB** (Malaysian room impulse responses if available).
-Every mixture ships with ground-truth `[start][Sxx] text [end]` **for free** — this is what removes the annotation cost.
+Every mixture ships with ground-truth `[start][Sxx] text [end]`.
 
-### 7.3 Existing *labeled* multi-speaker for real anchor + eval `[Proposed]`
+### 6.3 Existing *labeled* multi-speaker for real anchor + eval `[Proposed]`
 - **Malaysian Parliament / Hansard** — multi-speaker, named turns, timing → real diarization anchor + a natural eval slice (formal register).
 - **IMDA NSC Parts 3–6** — conversational, multi-speaker, code-switch (Singaporean ≈ but ≠ Malaysian).
 Use these as (a) a small real fine-tuning anchor to reduce sim-to-real gap, and (b) the evaluation set. A **modest professional re-check** of a few hours for the gold eval is the only manual labeling — far cheaper than annotating a full corpus.
 
 ---
 
-## 8. Datasets we already have / can access
+## 7. Datasets we can access
 
 | Resource | Role here | Note |
 | --- | --- | --- |
@@ -130,7 +114,7 @@ Use these as (a) a small real fine-tuning anchor to reduce sim-to-real gap, and 
 
 ---
 
-## 9. Implementation plan (lightweight, no collection)
+## 8. Implementation plan (lightweight, no collection)
 
 1. **Baseline.** Run released 0.9B zero-shot on a Parliament/IMDA slice; report cpCER/Δcp — tells us where fine-tuning is actually needed. `[Proposed]`
 2. **Build the mixer + scorer.** Implement §3.2 simulation and the A.2 normalizer; validate the scorer by reproducing an AISHELL-4 number.
@@ -142,7 +126,7 @@ Use these as (a) a small real fine-tuning anchor to reduce sim-to-real gap, and 
 
 ---
 
-## 10. Metrics & evaluation
+## 9. Metrics & evaluation
 
 - **CER** `[Paper]` — character edit distance, text only (ASR quality). *For Malay/English also report **WER** (space-delimited).*
 - **cpCER** `[Paper]` — concatenated **minimum-permutation** CER: tries all speaker-label permutations (Hungarian matching), then scores. The whole-system number.
@@ -189,9 +173,11 @@ Compact view (headline joint metrics; full CER/WER/cpCER/Δcp/DER reported per s
 
 ## 10. I/O format `[Paper]`
 
-- **Prompt (default, Chinese):** *"请将音频转写为文本，每一段需以起始时间戳和说话人编号（[S01]、[S02]…）开头…"*
+- **Prompt (default, Chinese):** *"请将音频转写为文本，每一段需以起始时间戳和说话人编号（[S01]、[S02]、[S03]…）开头，正文为对应的语音内容，并在段末标注结束时间戳。/ Transcribe the audio; each segment starts with a start timestamp and speaker ID, then the speech content, and ends with an end timestamp."*
 - **Hotwords (free gains):** append `热词提示：Putrajaya, KWSP, Petronas, …` — biases toward Malaysian names/orgs, no retraining.
-- **Output:** `[start][Sxx] text [end]`, plus optional `<emotion> <event> <ovl> <ins>` tags (stripped at scoring).
+- **Output:** `[start_time][Sxx] text [end_time]`, plus optional `<emotion> <event> <ovl> (overlap) <ins>` tags (stripped at scoring).
+
+Evaluation normalization (Appendix A.2) — before scoring they strip parentheticals \s*\(.*?\), angle-tags <.*?>, and non-speaker brackets \[(?!S\d+\]).*?\], keeping only [Sxx] tags and text. This normalizer must be replicated or CER numbers won't be comparable.
 
 ---
 
@@ -215,16 +201,6 @@ Compact view (headline joint metrics; full CER/WER/cpCER/Δcp/DER reported per s
 5. Tokenizer check: confirm the backbone LLM's tokenizer covers Malay diacritics and Tamil/Chinese scripts well; a poor tokenizer inflates CER on non-Latin segments.
 6. Cheapest first experiment: before any training, run the released 0.9B checkpoint on Malaysian meeting audio and measure cpCER/Δcp. That baseline tells you how much its "50+ languages" already transfers, and where fine-tuning is actually needed.
 7. Hotwords for free gains: Malaysian names, place names (e.g., Putrajaya, Kementerian), and org acronyms via the 热词提示 mechanism — no training required.
-
-## Malay Datasets - options closest to AISHELL-4
-| Resource | Match to AISHELL-4 | Notes |
-|----------|--------------------|-------|
-| **IMDA National Speech Corpus (Singapore), Parts 3–6** | **Best** | Conversational, multi-speaker, includes Malay and heavy code-switching (Manglish/Singlish). Parts 3–4 contain two-person conversations with timestamps, making them suitable for real diarization. |
-| **Malaysian Parliament / Hansard recordings** | **Good** | Debate recordings with multiple speakers, named speaker turns, and timing. Mesolitica has released Malaysian Parliament speech datasets, making this a strong AISHELL-4 analogue for diarization training. |
-| **Mesolitica / Malaya-Speech corpora** | **Good for the pool** | Large Malaysian ASR datasets, including code-switching. Mostly single-speaker recordings, making them ideal as the utterance pool for the synthetic simulator (§6), rather than as ready-made meeting data. |
-| **FLEURS (ms), Common Voice Malay** | **Weak** | Single-speaker read speech. Useful as a simulation pool, but not as diarization evaluation data. |
-
-Use IMDA Part 3 / parliament data as real multi-speaker train+test, and use Malaya-Speech/Common Voice/FLEURS as the single-speaker pool that you feed into the synthetic mixer. 
 
 ## Evaluation — Malaysian multi-speaker SATS
 
