@@ -35,7 +35,7 @@ log-mel input_features → WhisperEncoder
 - **Speaker labels are relative** — `[S01]` = "voice #1 in this file," not a named identity.
 - **Loss** — inferred next-token cross-entropy over the serialized target; **not stated**.
 
-Main limitation is a **sim-to-real gap** and **limited real eval coverage** (Section 9).
+Main limitation is a **sim-to-real gap** and **limited real eval coverage**.
 
 ## 3. Data
 - Real Data
@@ -120,7 +120,7 @@ Use these as (a) a small real fine-tuning anchor to reduce sim-to-real gap, and 
 2. **Build the mixer + scorer.** Implement §3.2 simulation and the A.2 normalizer; validate the scorer by reproducing an AISHELL-4 number.
 3. **Generate SUARA-Sim** from the pool (Section 4.1–4.2).
 4. **Fine-tune (LoRA).** Freeze Whisper encoder `[Code]`, LoRA on Qwen3; short-context first, then RoPE-extend. Train on Sim + small real anchor.
-5. **Evaluate** (Section 7) and iterate on the real:sim ratio.
+5. **Evaluate** and iterate on the real:sim ratio.
 
 **Ablations worth running `[Proposed]`:** real:sim ratio · encoder frozen vs tuned · 4× vs 2× time-merge · with/without hotwords.
 
@@ -141,9 +141,9 @@ We evaluate across **four regimes** so results generalize beyond any single spea
 
 | Eval set | Regime it covers | Source | Annotation | Legal note |
 | --- | --- | --- | --- | --- |
-| **Parliament** | Long, **formal**, turn-clean | Malaysian Hansard | Existing named turns + light gold re-check | Public record — verify reuse terms |
+| **Parliament** | Long, **formal**, turn-clean | Malaysian Hansard debates | Existing named turns + light gold re-check | Public record — verify reuse terms |
 | **IMDA-conv** | **Conversational**, code-switch | IMDA NSC Parts 3–4 | Existing labels | IMDA agreement; Singaporean ≠ MY |
-| **Movies-style** | **Short, dense-overlap** | **Simulated** from our pool (§4.2) | Auto gold (free) | Clean — our own audio |
+| **Movies-style** | **Short, dense-overlap** | **Simulated** from our pool (§6.2) | Auto gold (free) | Clean — our own audio |
 | **Podcast-style** | Long, **conversational**, Manglish | Small **CC-licensed / owned** MY podcast slice | Small professional pass | No YouTube scraping; licensed or owned only |
 
 Rationale: Parliament + IMDA alone miss dense overlap and conversational Manglish. **Movies-style is free** (the simulator already emits short overlap-rich clips with gold labels); only **Podcast-style** needs a small, targeted, legally-sourced + lightly-annotated slice. This closes the coverage gap without a collection program.
@@ -159,9 +159,6 @@ Compact view (headline joint metrics; full CER/WER/cpCER/Δcp/DER reported per s
 | **MOSS 0.9B (LoRA on Sim + anchor)** | — | — | — | — |
 
 > Read **per column** (per regime) — cpWER/DER are not comparable across regimes (overlap density and register differ). Small dialect/Podcast slices → report variance / CIs.
-
-*Test sets: IMDA-conv = IMDA NSC conversational subset; Parliament = Malaysian Hansard debates; Manglish = code-switched set. Reference numbers from the MOSS
-paper (Chinese/English benchmarks) are in the section below and are NOT directly comparable to these Malaysian sets.*
 
 ### Reference — MOSS 0.9B reported `[Paper]` (Mandarin/English; not directly comparable)
 
