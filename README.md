@@ -117,9 +117,9 @@ Use these as (a) a small real fine-tuning anchor to reduce sim-to-real gap, and 
 ## 8. Implementation plan (lightweight, no collection)
 
 1. **Baseline.** Run released 0.9B zero-shot on a Parliament/IMDA slice; report cpCER/Δcp — tells us where fine-tuning is actually needed. `[Proposed]`
-2. **Build the mixer + scorer.** Implement §3.2 simulation and the A.2 normalizer; validate the scorer by reproducing an AISHELL-4 number.
-3. **Generate SUARA-Sim** from the pool (Section 4.1–4.2).
-4. **Fine-tune (LoRA).** Freeze Whisper encoder `[Code]`, LoRA on Qwen3; short-context first, then RoPE-extend. Train on Sim + small real anchor.
+2. **Build the mixer + scorer.** Implement simulation and the A.2 normalizer; validate the scorer by reproducing an AISHELL-4 number.
+3. **Generate SUARA-Sim** from the pool.
+4. **Fine-tune (LoRA).** Freeze Whisper encoder, LoRA on Qwen3; short-context first, then RoPE-extend. Train on Sim + small real anchor.
 5. **Evaluate** and iterate on the real:sim ratio.
 
 **Ablations worth running `[Proposed]`:** real:sim ratio · encoder frozen vs tuned · 4× vs 2× time-merge · with/without hotwords.
