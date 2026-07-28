@@ -193,6 +193,8 @@ Compact view (headline joint metrics; full CER/WER/cpCER/Δcp/DER reported per s
 
 **What this approach does *not* give us:** a professionally-annotated, demographically-controlled Malaysian benchmark covering all dialects and Manglish conversational speech. If evaluation coverage proves insufficient, the full data-collection track is the fallback.
 
+---
+
 # Shortlist table
 
 | Paper                                                                                                              | Why it matters                                                             | Adaptation strategy to Malay                                                                                      | Data needs                                                        | Priority    |
