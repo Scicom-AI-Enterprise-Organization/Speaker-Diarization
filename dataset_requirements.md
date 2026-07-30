@@ -4,13 +4,12 @@ Speaker-Attributed, Time-Stamped Transcription (SATS) — dataset spec to fine-t
 and evaluate **MOSS-Transcribe-Diarize 0.9B** for Malaysian multilingual speech.
 
 > **Provenance:** `[Paper]` = MOSS technical report · `[Code]` = released config/weights · `[Proposed]` = our recommendation · `[Internal]` = SciCom/Mesolitica assets.
-> **Hard constraint:** **reuse and modify existing datasets — no from-scratch collection** (no hiring speakers, no studio sessions). Where new audio is unavoidable it is a small, licensed/owned slice only.
 
 ---
 
 ## 0. Deployment context (drives every number below)
 
-SciCom runs high-volume **contact-centre / customer-engagement** audio: mostly **2-party phone calls**, multilingual and code-switched, often **8 kHz narrowband telephony**. The dataset must therefore *match deployment acoustics*, not idealized studio speech. Key implications:
+The company runs high-volume **contact-centre / customer-engagement** audio: mostly **2-party phone calls**, multilingual and code-switched, often **8 kHz narrowband telephony**. The dataset must therefore *match deployment acoustics*, not idealized studio speech. Key implications:
 - **Channel:** include telephone-band audio; the model front-end wants **16 kHz** `[Code]`, so 8 kHz sources must be up-sampled (band-limited content stays band-limited — that realism is desirable).
 - **Speaker count:** 2-party dominant (agent + customer); meetings are the multi-party stretch case.
 - **Languages by business volume:** Malay, Malaysian English, Manglish, Mandarin first; Tamil/Cantonese/Hokkien second.
