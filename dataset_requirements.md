@@ -76,9 +76,7 @@ The production-grade version once the MVP proves value.
 
 ## 5. Preprocessing — silence, resampling, channel
 
-### 5.1 Should you remove long silence?
-
-**Yes for the Pool, carefully for Real.**
+### 5.1 Remove long silence
 
 - **Pool (single-speaker → simulator):** **trim aggressively.** The simulator re-places utterances on a new timeline and generates fresh labels, so tight, silence-free clips are strictly better (no wasted context, cleaner overlap construction). No label is harmed because labels are (re)generated downstream.
 - **Real multi-speaker (train/eval with timestamps):** **do NOT blindly strip internal silence.** Every timestamp is ground truth; deleting a 2 s pause shifts everything after it and corrupts the diarization reference. Allowed:
