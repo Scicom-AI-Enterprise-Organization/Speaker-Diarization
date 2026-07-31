@@ -10,8 +10,8 @@ Speaker-Attributed Time-Stamped Transcription (SATS), via data reuse + synthetic
 | 0 | Paper study + architecture recovered from released code | — | ✅ done |
 | 1 | Project scaffold + isolated env (`envs/sats`, `datasets<4`) on DSW box | — | ✅ done |
 | 2 | Dataset inspection (schema / duration / SR / speaker / transcript) | `scripts/inspect*.py` | ✅ done |
-| 3 | Build single-speaker **pool** → normalized 16 kHz mono + manifest | `scripts/build_pool.py` | 🔄 in progress |
-| 4 | **Simulate** labeled multi-speaker SATS mixtures from the pool | `scripts/simulate.py` | ⬜ next |
+| 3 | Build single-speaker **pool** → normalized 16 kHz mono + manifest | `scripts/build_pool.py` | ✅ done |
+| 4 | **Simulate** labeled multi-speaker SATS mixtures from the pool | `scripts/simulate.py` | 🔄 in progress |
 | 5 | Fetch multi-speaker sets (parliament / podcast / diarization) for **Real + Eval** | `scripts/fetch_multispeaker.py` | ⬜ todo (special access) |
 | 6 | Speaker-disjoint **train/val/test splits** | `scripts/make_splits.py` | ⬜ todo |
 | 7 | **Scorer**: CER/WER, cpCER/Δcp + DER/timestamp | `src/.../metrics.py` | ⬜ todo |
