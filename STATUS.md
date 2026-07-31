@@ -87,7 +87,7 @@ The dataset pool has been successfully built.
 
 ### Next Step
 
-Run `simulate.py` to convert this clean speech pool into labeled multi-speaker **SATS** mixtures following the paper's §3.2 simulation recipe:
+Ran `simulate.py` to convert this clean speech pool into labeled multi-speaker **SATS** mixtures following the paper's §3.2 simulation recipe:
 
 - **2–12 speakers** per mixture
 - **≤80% overlap ratio**
@@ -95,3 +95,20 @@ Run `simulate.py` to convert this clean speech pool into labeled multi-speaker *
 - Gold transcript labels in the format:
   > [start][S01] text [end]
   > [start][S02] text [end]
+  
+## Milestone Recap
+
+Everything needed to generate and evaluate the Malaysian **SATS** benchmark is now built and validated using only the data already available.
+
+- ✅ **Speech pool:** 12,426 clips (22.52 hours)
+- ✅ **Simulation pipeline:** `sim_ms` (2,000 mixtures), `sim_mixed` (1,000 mixtures), with gold labels
+- ✅ **Evaluation toolkit:** `cpCER`, `cpWER`, and `Δcp` metrics, fully self-tested
+- ✅ **Project tracking:** state documented in memory and `STATUS.md`
+
+### Remaining Work
+
+The remaining tasks focus on the model evaluation pipeline:
+
+1. Build the real evaluation set.
+2. Establish zero-shot baselines.
+3. Fine-tune the target models.
