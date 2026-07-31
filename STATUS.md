@@ -66,3 +66,32 @@ Speaker-Attributed Time-Stamped Transcription (SATS), via data reuse + synthetic
 ## Immediate next step
 
 Run `build_pool.py` at full size, then write `simulate.py` (pool → labeled multi-speaker mixtures, §3.2 recipe: 2–12 speakers, ≤80 % overlap, SNR 0–15 dB).
+
+## Dataset Pool
+
+The dataset pool has been successfully built.
+
+| Language | Clips | Hours |
+|----------|------:|------:|
+| Malay (`ms`) | 5,654 | 13.07 |
+| Mandarin (`zh`) | 3,000 | 4.38 |
+| Cantonese (`yue`) | 3,000 | 3.64 |
+| Tamil (`ta`) | 772 | 1.43 |
+| **Total** | **12,426** | **22.52** |
+
+### Notes
+
+- 🎯 **Malay** is the strongest language in the pool (**13.07 hours**), making it well suited for the Malay-first pilot.
+- ⚠️ **Tamil** is comparatively limited (**772 clips, 1.43 hours**). This is primarily due to the `ovrl ≥ 3.0` quality filter and the available dataset size. Future improvements could include lowering the quality threshold or augmenting the pool with `tamil-youtube` pseudo-labeled data.
+- ✅ The pipeline completed successfully. The `os._exit` patch resolved the previous shutdown issue.
+
+### Next Step
+
+Run `simulate.py` to convert this clean speech pool into labeled multi-speaker **SATS** mixtures following the paper's §3.2 simulation recipe:
+
+- **2–12 speakers** per mixture
+- **≤80% overlap ratio**
+- **SNR:** 0–15 dB
+- Gold transcript labels in the format:
+  > [start][S01] text [end]
+  > [start][S02] text [end]
