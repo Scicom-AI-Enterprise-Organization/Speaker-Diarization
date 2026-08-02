@@ -112,3 +112,30 @@ The remaining tasks focus on the model evaluation pipeline:
 1. Build the real evaluation set.
 2. Establish zero-shot baselines.
 3. Fine-tune the target models.
+
+
+### Data splits (speaker/video-disjoint)
+
+| Split | real/diar (videos) | pool (clips / speakers) |
+|-------|-------------------:|------------------------:|
+| train | 56                 | 11,197 / 5,679          |
+| val   | —                  | 1,229 / 624             |
+| test  | **24**             | —                       |
+| **grouping key** | video `id`  | `speaker`               |
+
+*Test set = 24 held-out real multi-speaker videos, disjoint from the anchor. Pool has no
+test (the test is real audio, never synthetic); real has no val (validation comes from the
+pool + optional real). Leakage check: **clean** (no group shared across splits).*
+
+### Results (test = real/diar split_test, 24 videos, same set for all rows)
+
+| System | CER↓ | cpCER↓ | Δcp↓ | WER↓ | cpWER↓ | Δwer↓ |
+|--------|-----:|-------:|-----:|-----:|-------:|------:|
+| MOSS 0.9B — zero-shot            | 61.62 | 86.64 | 25.02 | 91.78 | 113.96 | 22.18 |
+| MOSS 0.9B — fine-tuned (LoRA)    | —     | —     | —     | —     | —      | —     |
+| Cascade — Whisper-v3 + Pyannote  | —     | —     | —     | —     | —      | —     |
+
+*Zero-shot = untuned MOSS. Labels are weak (auto ASR + re-clustered speakers) and n=24 is
+small, so treat absolute values as a diagnostic floor; the comparison across rows on this
+fixed set is what matters. A hand-verified gold slice of these 24 videos gives the
+trustworthy number later.*
