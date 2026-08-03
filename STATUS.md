@@ -137,3 +137,15 @@ pool + optional real). Leakage check: **clean** (no group shared across splits).
 small, so treat absolute values as a diagnostic floor; the comparison across rows on this
 fixed set is what matters. A hand-verified gold slice of these 24 videos gives the
 trustworthy number later.*
+
+### Dataset comparison 
+
+|  | Paper | Malay |
+|-------|-------------------:|------------------------:|
+| train | (a) AISHELL4_long multi-speaker conversational recordings captured in meeting rooms, used the averaged channel of the far-field signals - duration: 2195.4–2393.9 s,	avg: 2290.6 s,	5–7 speakers; (b) from in-house corpus, a randomly sampled pool of single-speaker utterances to construct synthetic mixtures. [15] = Park et al., NeMo property-aware simulation; [13] = Montreal Forced Aligner; [11] = Landini et al. for noise/reverb        | —          |
+| val   | —                  | —             |
+| test  | (a) AISHELL4_long; (b) curated two datasets from podcasts (googletime) - duration: 1528.7–3636.5 s, avg:	2658.9 s,	2–11 speakers, multi-guest interviews from YouTube, using the platform's available subtitles; films (movies800times, short dialog clips) - duration: 0.418–29.888 s, avg:	11.526 s,	1–6 speakers           | —                       |
+
+QUESTIONS: 
+1. Do we check whether the timestamps were correct?
+2. Should we compare the results not only with cascaded methods but also with gemini and the models they listed?
