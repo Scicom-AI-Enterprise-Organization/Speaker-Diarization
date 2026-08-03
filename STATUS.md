@@ -152,7 +152,7 @@ QUESTIONS:
 3. Should we add any examples in Tamil, Chinese or yue in the test set?
 4. SciCom's traffic is 8 kHz telephony with hold music and call-centre background. Should I make all the audio 8 kHz instead of 16 kHz?
 5. What languages should we include in scoring?
-6. Is there anyone who can annotate the parliament dataset? Otherwise, we could use YouTube and available subtitles like the paper did? Is it legal?
+6. Is there anyone who can annotate the parliament dataset? Otherwise, we could use YouTube and available subtitles like the paper did? Is it legal? Or we could annotate speakers manually - it's easier and faster than annotate speech.
 7. We can't test diarization on mesolitica/unsupervised-malay-youtube-speaker-diarization because it's only utterances of individual speakers (there's overlap sometimes but it's not stated and trained as one speaker)
 
 https://huggingface.co/datasets/zhaochenyang20/googletime/viewer/default/validation?row=0
