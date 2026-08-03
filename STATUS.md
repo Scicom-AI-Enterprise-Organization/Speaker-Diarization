@@ -142,9 +142,9 @@ trustworthy number later.*
 
 |  | Paper | Malay |
 |-------|-------------------:|------------------------:|
-| train | (a) AISHELL4_long multi-speaker conversational recordings captured in meeting rooms, used the averaged channel of the far-field signals - duration: 2195.4–2393.9 s,	avg: 2290.6 s,	5–7 speakers - manually-annotated, time-stamped, speaker-mentioned; (b) from in-house corpus, a randomly sampled pool of single-speaker utterances to construct synthetic mixtures. [15] = Park et al., NeMo property-aware simulation; [13] = Montreal Forced Aligner; [11] = Landini et al. for noise/reverb        | —          |
+| train | (a) AISHELL4_long multi-speaker conversational recordings captured in meeting rooms, used the averaged channel of the far-field signals - manually-annotated, time-stamped, speaker-mentioned; (b) from in-house corpus, a randomly sampled pool of single-speaker utterances to construct synthetic mixtures. [15] = Park et al., NeMo property-aware simulation; [13] = Montreal Forced Aligner; [11] = Landini et al. for noise/reverb        | —          |
 | val   | —                  | —             |
-| test  | (a) AISHELL4_long; (b) curated two datasets from podcasts (googletime) - duration: 1528.7–3636.5 s, avg:	2658.9 s,	2–11 speakers, multi-guest interviews from YouTube, using the platform's available subtitles; films (movies800times, short dialog clips) - duration: 0.418–29.888 s, avg:	11.526 s,	1–6 speakers           | —                       |
+| test  | (a) AISHELL4_long - duration: 2195.4–2393.9 s,	avg: 2290.6 s,	5–7 speakers; (b) curated two datasets from podcasts (googletime) - duration: 1528.7–3636.5 s, avg:	2658.9 s,	2–11 speakers, multi-guest interviews from YouTube, using the platform's available subtitles; films (movies800times, short dialog clips) - duration: 0.418–29.888 s, avg:	11.526 s,	1–6 speakers           | —                       |
 
 QUESTIONS: 
 1. Do we check whether the timestamps were correct?
