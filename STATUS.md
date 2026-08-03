@@ -13,10 +13,10 @@ Speaker-Attributed Time-Stamped Transcription (SATS), via data reuse + synthetic
 | 3 | Build single-speaker **pool** → normalized 16 kHz mono + manifest | `scripts/build_pool.py` | ✅ done |
 | 4 | **Simulate** labeled multi-speaker SATS mixtures from the pool | `scripts/simulate.py` | 🔄 in progress |
 | 5 | Fetch multi-speaker sets (parliament / podcast / diarization) for **Real + Eval** | `scripts/fetch_multispeaker.py` | ⬜ todo (special access) |
-| 6 | Speaker-disjoint **train/val/test splits** | `scripts/make_splits.py` | ⬜ todo |
-| 7 | **Scorer**: CER/WER, cpCER/Δcp + DER/timestamp | `src/.../metrics.py` | ⬜ todo |
-| 8 | **Zero-shot baseline** of MOSS 0.9B on Malaysian eval | `scripts/run_baseline.py` | ⬜ todo |
-| 9 | **LoRA fine-tune** (freeze Whisper encoder) on sim + real anchor | `scripts/train_lora.py` | ⬜ todo |
+| 6 | Speaker-disjoint **train/val/test splits** | `scripts/make_splits.py` | ✅ done |
+| 7 | **Scorer**: CER/WER, cpCER/Δcp + DER/timestamp | `src/.../metrics.py` | ✅ done |
+| 8 | **Zero-shot baseline** of MOSS 0.9B on Malaysian eval | `scripts/run_baseline.py` | ✅ done |
+| 9 | **LoRA fine-tune** (freeze Whisper encoder) on sim + real anchor | `scripts/train_lora.py` | 🔄 in progress |
 | 10 | **Evaluate** fine-tuned vs zero-shot vs cascade baseline | `scripts/evaluate.py` | ⬜ todo |
 
 ## Data storage
