@@ -151,3 +151,6 @@ QUESTIONS:
 2. Should we compare the results not only with cascaded methods but also with gemini and the models they listed?
 3. Should we add any examples in Tamil, Chinese or yue in the test set?
 4. SciCom's traffic is 8 kHz telephony with hold music and call-centre background. Should I make all the audio 8 kHz instead of 16 kHz?
+
+https://huggingface.co/datasets/zhaochenyang20/googletime/viewer/default/validation?row=0
+https://huggingface.co/datasets/zhaochenyang20/movies800time
