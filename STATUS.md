@@ -83,7 +83,6 @@ The dataset pool has been successfully built.
 
 - 🎯 **Malay** is the strongest language in the pool (**13.07 hours**), making it well suited for the Malay-first pilot.
 - ⚠️ **Tamil** is comparatively limited (**772 clips, 1.43 hours**). This is primarily due to the `ovrl ≥ 3.0` quality filter and the available dataset size. Future improvements could include lowering the quality threshold or augmenting the pool with `tamil-youtube` pseudo-labeled data.
-- ✅ The pipeline completed successfully. The `os._exit` patch resolved the previous shutdown issue.
 
 ### Next Step
 
@@ -100,10 +99,9 @@ Ran `simulate.py` to convert this clean speech pool into labeled multi-speaker *
 
 Everything needed to generate and evaluate the Malaysian **SATS** benchmark is now built and validated using only the data already available.
 
-- ✅ **Speech pool:** 12,426 clips (22.52 hours)
-- ✅ **Simulation pipeline:** `sim_ms` (2,000 mixtures), `sim_mixed` (1,000 mixtures), with gold labels
-- ✅ **Evaluation toolkit:** `cpCER`, `cpWER`, and `Δcp` metrics, fully self-tested
-- ✅ **Project tracking:** state documented in memory and `STATUS.md`
+- **Speech pool:** 12,426 clips (22.52 hours)
+- **Simulation pipeline:** `sim_ms` (2,000 mixtures), `sim_mixed` (1,000 mixtures), with gold labels
+- **Evaluation toolkit:** `cpCER`, `cpWER`, and `Δcp` metrics, fully self-tested
 
 ### Remaining Work
 
