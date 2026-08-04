@@ -147,12 +147,12 @@ trustworthy number later.*
 | test | (a) AISHELL4_long - duration: 2195.4–2393.9 s,	avg: 2290.6 s,	5–7 speakers; (b) curated two datasets from podcasts (googletime) - duration: 1528.7–3636.5 s, avg:	2658.9 s,	2–11 speakers, multi-guest interviews from YouTube, using the platform's available subtitles; films (movies800times, short dialog clips) - duration: 0.418–29.888 s, avg:	11.526 s,	1–6 speakers | mesolitica/unsupervised-malay-youtube-speaker-diarization - split by video id → split_test [test should be on gold, but it can't be gold as it's 1 speaker] |
 
 QUESTIONS: 
-1. Do we check whether the timestamps were correct?
-2. Should we compare the results not only with cascaded methods but also with gemini and the models they listed?
-3. Should we add any examples in Tamil, Chinese or yue in the test set?
-4. SciCom's traffic is 8 kHz telephony with hold music and call-centre background. Should I make all the audio 8 kHz instead of 16 kHz?
-5. What languages should we include in scoring?
-6. Is there anyone who can annotate the parliament dataset? Otherwise, we could use YouTube and available subtitles like the paper did? Is it legal? Or we could annotate speakers manually - it's easier and faster than annotate speech.
+1. Do we check whether the timestamps were correct? - we should
+2. Should we compare the results not only with cascaded methods but also with gemini and the models they listed? - 
+3. Should we add any examples in Tamil, Chinese or yue in the test set? - can bc contswitching
+4. SciCom's traffic is 8 kHz telephony with hold music and call-centre background. Should I make all the audio 8 kHz instead of 16 kHz? - 16 is fine - downsample and upsample what I have to simulate telephony
+5. What languages should we include in scoring? - Malaysian; if more, then more
+6. Is there anyone who can annotate the parliament dataset? Otherwise, we could use YouTube and available subtitles like the paper did? Is it legal? Or we could annotate speakers manually - it's easier and faster than annotate speech. - synthetic dataset that simulates AISHELL4 - overlap or no overlap, store during augmentations - 50 s - merge the audio - emgs
 7. We can't test diarization on mesolitica/unsupervised-malay-youtube-speaker-diarization because it's only utterances of individual speakers (there's overlap sometimes but it's not stated and trained as one speaker)
 
 https://huggingface.co/datasets/zhaochenyang20/googletime/viewer/default/validation?row=0
@@ -174,7 +174,34 @@ To strengthen speaker attribution and timestamp prediction, and to cope with the
 | "overlaps capped at 80 percent of the shorter segment" | `max_ov = 0.8 * min(prev_dur, dur)` |
 | "snapped to nearby low-energy points"                  | `low_energy_snap()` - is ±0.25 s over 10 ms frames okay?                |
 | "50 ms cross-fades"                                    | `XFADE = int(0.05 * SR)`            |
-| "SNRs uniformly from 0–15 dB"                          | `snr = rng.uniform(0, 15)` - ?? Measured over the full buffer including silence, or over active speech only?         |
+| "SNRs uniformly from 0–15 dB"                          | `snr = rng.uniform(0, 15)` - ?? Measured over the full buffer including silence, or over active speech only? - should be only active         |
+
+trim and then append silence
+experiment! real world is super noisy
+
+speaker time stamp
+
+Read papers
+
+can innovate to support streaming?
+
+audio in one audio channel
+
+how do we retain context
+
+whisper streaming? how they did audio streaming
+
+audio encoder -> projection -> LLM
+
+we only 
+
+audio -> embedding -> 
+
+streaming: channels by channels
+
+append 
+
+how do we make the audio streamable
 
 Landini et al. [11] specifies:
 "37 noises labeled as 'background' in the MUSAN collection [29] are added to the signal scaled with a signal to noise ratio (SNR) selected randomly from {5, 10, 15, 20}"
@@ -184,3 +211,5 @@ Landini et al. [11] specifies:
 2. Log-normal μ and σ for the weights.
 3. Gaussian gap mean and σ.
 4. Snap radius for "nearby low-energy points", and the source of word boundaries.
+
+similarity augmentation for the transcription - did they care about the context - main is acoustic for me
