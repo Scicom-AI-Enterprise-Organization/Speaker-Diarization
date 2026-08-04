@@ -157,3 +157,30 @@ QUESTIONS:
 
 https://huggingface.co/datasets/zhaochenyang20/googletime/viewer/default/validation?row=0
 https://huggingface.co/datasets/zhaochenyang20/movies800time
+
+3.2 Simulated Data
+To strengthen speaker attribution and timestamp prediction, and to cope with the scarcity of high-quality real-world recordings, we use simulated data during training. From our in-house corpus, we randomly sample a pool of single-speaker utterances to construct synthetic mixtures. Following previous work [15], we employ a controllable probabilistic simulator to construct synthetic multi-speaker conversational data. Specifically, for each synthetic dialogue, we first draw 2–12 distinct speakers and randomly select one utterance per speaker. Each selected utterance is then partitioned into contiguous word runs by *sampling a segment count* and *log-normal weights*; the resulting segments are placed on a single timeline with Gaussian-distributed inter-segment gaps, enforcing speaker alternation while permitting overlaps capped at 80 percent of the shorter segment. To improve perceptual continuity, segment boundaries are snapped to nearby low-energy points and 50 ms cross-fades are applied. Following prior work [11], we augment the mixtures with real-world noise and reverberation, sampling SNRs uniformly from 0–15 dB.
+[15 - T. J. Park, H. Huang, C. Hooper, N. Koluguri, K. Dhawan, I. Medennikov, A. Jukic, J. Balam, and B. Ginsburg. Property-aware multi-speaker data simulation: A probabilistic modelling technique for synthetic data generation. In Proceedings of the CHiME-2023 Workshop, 2023.]
+[11 - Federico Landini, Jan Profant, Mireia Díez, and Lukáš Burget. From simulated mixtures to simulated conversations as training data for neural diarization. In Proceedings of Interspeech, pages 143–147, 2022.]
+
+
+| Their words                                            | `simulate2.py`                      |
+| ------------------------------------------------------ | ----------------------------------- |
+| "draw 2–12 distinct speakers"                          | `--min-spk 2 --max-spk 12` - ??? uniform but [15] uses a weighted distribution???          |
+| "randomly select one utterance per speaker"            | one clip per chosen speaker         |
+| "partitioned into contiguous word runs"                | `split_utterance()` - is U(1, 6) okay? μ=0, σ=0.5 okay?                |
+| "Gaussian-distributed inter-segment gaps"              | `rng.normal(...)`  is N(0.3, 0.6) s okay?                 |
+| "enforcing speaker alternation"                        | `alternate()`                       |
+| "overlaps capped at 80 percent of the shorter segment" | `max_ov = 0.8 * min(prev_dur, dur)` |
+| "snapped to nearby low-energy points"                  | `low_energy_snap()` - is ±0.25 s over 10 ms frames okay?                |
+| "50 ms cross-fades"                                    | `XFADE = int(0.05 * SR)`            |
+| "SNRs uniformly from 0–15 dB"                          | `snr = rng.uniform(0, 15)` - ?? Measured over the full buffer including silence, or over active speech only?         |
+
+Landini et al. [11] specifies:
+"37 noises labeled as 'background' in the MUSAN collection [29] are added to the signal scaled with a signal to noise ratio (SNR) selected randomly from {5, 10, 15, 20}"
+"a RIR is sampled from the collection used in [30] and with 0.5 probability used to reverberate the utterances of each speaker"
+
+1. Segment-count distribution for the word runs — MOSS says only "sampling a segment count".
+2. Log-normal μ and σ for the weights.
+3. Gaussian gap mean and σ.
+4. Snap radius for "nearby low-energy points", and the source of word boundaries.
