@@ -1,21 +1,5 @@
 [Overview](README.md) | [Notes](STATUS.md)
 
-<details>
-  <summary><b>Tab 1: JavaScript</b></summary>
-
-  ```javascript
-  console.log("Hello from Tab 1!");
-  ```
-</details>
-
-<details>
-  <summary><b>Tab 2: Python</b></summary>
-
-  ```python
-  print("Hello from Tab 2!")
-  ```
-</details>
-
 # SATS — Speaker-Attributed, Time-Stamped Transcription
 ## Part I. Paper summary
 > Link: https://huggingface.co/OpenMOSS-Team/MOSS-Transcribe-Diarize
