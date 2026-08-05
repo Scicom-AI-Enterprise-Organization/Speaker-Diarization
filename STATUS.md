@@ -166,7 +166,7 @@ To strengthen speaker attribution and timestamp prediction, and to cope with the
 
 | Their words                                            | `simulate2.py`                      |
 | ------------------------------------------------------ | ----------------------------------- |
-| "draw 2–12 distinct speakers"                          | `--min-spk 2 --max-spk 12` - ??? uniform but [15] uses a weighted distribution???          |
+| "draw 2–12 distinct speakers"                          | `--min-spk 2 --max-spk 12` - ??? uniform |
 | "randomly select one utterance per speaker"            | one clip per chosen speaker         |
 | "partitioned into contiguous word runs"                | `split_utterance()` - is U(1, 6) okay? μ=0, σ=0.5 okay?                |
 | "Gaussian-distributed inter-segment gaps"              | `rng.normal(...)`  is N(0.3, 0.6) s okay?                 |
