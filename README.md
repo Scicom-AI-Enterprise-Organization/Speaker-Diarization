@@ -1,12 +1,20 @@
 [Overview](README.md) | [Notes](STATUS.md)
 
-### tab Social-Media
+<details>
+  <summary><b>Tab 1: JavaScript</b></summary>
 
-tab content Social-Media
+  ```javascript
+  console.log("Hello from Tab 1!");
+  ```
+</details>
 
-### tab Contact
+<details>
+  <summary><b>Tab 2: Python</b></summary>
 
-tab content  Contact
+  ```python
+  print("Hello from Tab 2!")
+  ```
+</details>
 
 # SATS — Speaker-Attributed, Time-Stamped Transcription
 ## Part I. Paper summary
