@@ -1,5 +1,13 @@
 [Overview](README.md) | [Notes](STATUS.md)
 
+### tab Social-Media
+
+tab content Social-Media
+
+### tab Contact
+
+tab content  Contact
+
 # SATS — Speaker-Attributed, Time-Stamped Transcription
 ## Part I. Paper summary
 > Link: https://huggingface.co/OpenMOSS-Team/MOSS-Transcribe-Diarize
