@@ -213,3 +213,5 @@ Landini et al. [11] specifies:
 4. Snap radius for "nearby low-energy points", and the source of word boundaries.
 
 similarity augmentation for the transcription - did they care about the context - main is acoustic for me
+
+room_config.room_sz is sampled once per session while pos_src is a list of per-speaker positions (data_simulator.yaml:94–126) — one room, different seats. If you're using recorded RIRs, the equivalent is: sample one room per session and different measured positions within it, if your RIR collection is organised that way.
